@@ -1,19 +1,23 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<title>jQuery Boilerplate</title>
-		<script src="../bower_components/jquery/jquery.js"></script>
-		<script src="../bower_components/jcrop/js/jquery.Jcrop.js"></script>
-		<script src="../dist/jcrop-fileinput.js"></script>
-	</head>
-	<body>
+  <head>
+    <title>jQuery Boilerplate</title>
+    <script src="../bower_components/jquery/jquery.js"></script>
+    <script src="../bower_components/jcrop/js/jquery.Jcrop.js"></script>
+    <script src="../dist/jcrop-fileinput.js"></script>
+  </head>
+  <body>
     <form action="post" method="get" accept-charset="utf-8">
        <input type="file" name="example-input" id="fileinput" />
     </form>
-		<script>
-			$(function() {
-				$("#fileinput").jCropFileInput();
-			});
-		</script>
-	</body>
+    <script>
+      $(function() {
+        $("#fileinput").jCropFileInput({
+          preview_height: 150,
+          preview_width: 150
+        });
+      });
+    </script>
+    <script src="http://localhost:35729/livereload.js?snipver=1" type="text/javascript"></script>
+  </body>
 </html>

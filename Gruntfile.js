@@ -43,13 +43,24 @@ module.exports = function(grunt) {
 					"dist/jcrop-fileinput.js": "src/jcrop-fileinput.coffee"
 				}
 			}
-		}
+		},
+
+    watch: {
+      options: {
+        livereload: true
+      },
+      coffee: {
+        files: 'src/jcrop-fileinput.coffee',
+        tasks: ['coffee']
+      }
+    }
 
 	});
 
 	grunt.loadNpmTasks("grunt-contrib-jshint");
 	grunt.loadNpmTasks("grunt-contrib-uglify");
 	grunt.loadNpmTasks("grunt-contrib-coffee");
+	grunt.loadNpmTasks("grunt-contrib-watch");
 
 	grunt.registerTask("default", ["jshint", "uglify"]);
 };
