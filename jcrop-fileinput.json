@@ -1,0 +1,36 @@
+{
+	"name": "boilerplate",
+	"title": "jQuery Boilerplate",
+	"description": "A jump-start for jQuery plugins development.",
+	"keywords": [
+		"jquery",
+		"jcrop",
+		"file input"
+	],
+	"version": "0.0.1",
+	"author": {
+		"name": "Mathieu Comandon",
+		"email": "strider@strycore.com",
+		"url": "http://strycore.com"
+	},
+	"maintainers": [
+		{
+			"name": "Mathieu Comandon",
+			"email": "strider@strycore.com",
+			"url": "http://strycore.com"
+		}
+	],
+	"licenses": [
+		{
+			"type": "MIT"
+		}
+	],
+	"bugs": "https://github.com/strycore/jcrop-fileinput/issues",
+	"homepage": "http://github.com/strycore/jcrop-fileinput",
+	"docs": "https://github.com/strycore/jcrop-fileinput#readme",
+	"download": "https://github.com/strycore/jcrop-fileinput/archive/master.zip",
+	"dependencies": {
+		"jquery": ">=1.9",
+    "jcrop": ">=0.0.1"
+	}
+}
