@@ -17,17 +17,6 @@ module.exports = function(grunt) {
 				" */\n"
 		},
 
-		// Concat definitions
-		concat: {
-			dist: {
-				src: ["src/jcrop-fileinput.js"],
-				dest: "dist/jcrop-fileinput.js"
-			},
-			options: {
-				banner: "<%= meta.banner %>"
-			}
-		},
-
 		// Lint definitions
 		jshint: {
 			files: ["src/jcrop-fileinput.js"],
@@ -58,10 +47,9 @@ module.exports = function(grunt) {
 
 	});
 
-	grunt.loadNpmTasks("grunt-contrib-concat");
 	grunt.loadNpmTasks("grunt-contrib-jshint");
 	grunt.loadNpmTasks("grunt-contrib-uglify");
 	grunt.loadNpmTasks("grunt-contrib-coffee");
 
-	grunt.registerTask("default", ["jshint", "concat", "uglify"]);
+	grunt.registerTask("default", ["jshint", "uglify"]);
 };
