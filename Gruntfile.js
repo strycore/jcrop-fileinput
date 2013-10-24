@@ -3,7 +3,7 @@ module.exports = function(grunt) {
 	grunt.initConfig({
 
 		// Import package manifest
-		pkg: grunt.file.readJSON("boilerplate.jquery.json"),
+		pkg: grunt.file.readJSON("jcrop-fileinput.json"),
 
 		// Banner definitions
 		meta: {
@@ -20,8 +20,8 @@ module.exports = function(grunt) {
 		// Concat definitions
 		concat: {
 			dist: {
-				src: ["src/jquery.boilerplate.js"],
-				dest: "dist/jquery.boilerplate.js"
+				src: ["src/jcrop-fileinput.js"],
+				dest: "dist/jcrop-fileinput.js"
 			},
 			options: {
 				banner: "<%= meta.banner %>"
@@ -30,7 +30,7 @@ module.exports = function(grunt) {
 
 		// Lint definitions
 		jshint: {
-			files: ["src/jquery.boilerplate.js"],
+			files: ["src/jcrop-fileinput.js"],
 			options: {
 				jshintrc: ".jshintrc"
 			}
@@ -39,8 +39,8 @@ module.exports = function(grunt) {
 		// Minify definitions
 		uglify: {
 			my_target: {
-				src: ["dist/jquery.boilerplate.js"],
-				dest: "dist/jquery.boilerplate.min.js"
+				src: ["dist/jcrop-fileinput.js"],
+				dest: "dist/jcrop-fileinput.min.js"
 			},
 			options: {
 				banner: "<%= meta.banner %>"
@@ -51,7 +51,7 @@ module.exports = function(grunt) {
 		coffee: {
 			compile: {
 				files: {
-					"dist/jquery.boilerplate.js": "src/jquery.boilerplate.coffee"
+					"dist/jcrop-fileinput.js": "src/jcrop-fileinput.coffee"
 				}
 			}
 		}
@@ -64,6 +64,4 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks("grunt-contrib-coffee");
 
 	grunt.registerTask("default", ["jshint", "concat", "uglify"]);
-	grunt.registerTask("travis", ["jshint"]);
-
 };

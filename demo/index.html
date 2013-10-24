@@ -2,15 +2,17 @@
 <html>
 	<head>
 		<title>jQuery Boilerplate</title>
-		<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
-		<script src="../dist/jquery.boilerplate.js"></script>
+		<script src="../bower_components/jquery/jquery.js"></script>
+		<script src="../bower_components/jcrop/js/jquery.Jcrop.js"></script>
+		<script src="../dist/jcrop-fileinput.js"></script>
 	</head>
 	<body>
+    <form action="post" method="get" accept-charset="utf-8">
+       <input type="file" name="example-input" id="fileinput" />
+    </form>
 		<script>
 			$(function() {
-				$("#element").defaultPluginName({
-					propertyName: "a custom value"
-				});
+				$("#fileinput").jCropFileInput();
 			});
 		</script>
 	</body>
