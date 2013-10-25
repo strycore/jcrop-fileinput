@@ -1,21 +1,26 @@
 do ($ = jQuery, window, document) ->
 
-  pluginName = "jCropFileInput"
+  pluginName = "JCropFileInput"
   defaults =
-    ratio: "",
-    preview_height: "640",
-    preview_width: "480"
+    ratio: undefined,
+    jcrop_width: "640",
+    jcrop_height: "480",
+    preview_height: "150",
+    preview_width: "150"
 
-  class Plugin
+  class JCropFileInput
     constructor: (@element, options) ->
-      @options = $.extend {}, defaults, options
+      @options = $.extend({}, defaults, options)
       @_defaults = defaults
       @_name = pluginName
       @init()
 
     init: ->
       $(@element).on('change', @on_fileinput_change)
-
+      @widgetContainer = $("<div>")
+      @widgetContainer.addClass('jcrop-fileinput-container')
+      $(@element).after(@widgetContainer)
+  
     on_fileinput_change: (evt) =>
       file = evt.target.files[0]
       reader = new FileReader()
@@ -24,19 +29,11 @@ do ($ = jQuery, window, document) ->
       reader.readAsDataURL(file)
 
     resize_image: (data, file) ->
-      self = this
       fileType = file.type
-      console.log(fileType)
-      maxWidth = 1800
-      maxHeight = 2400
-      image = new Image()
-      try
-        image.src = data
-      catch e
-        console.log "Invalid image with file type " + fileType + " : " + e
+      image = document.createElement('img')
+      image.src = data
       image.onload = (evt) =>
-        size = @get_image_size(image.width, image.height)
-        console.log(size)
+        size = @get_crop_area_size(image.width, image.height)
         imageWidth = size.width
         imageHeight = size.height
         canvas = document.createElement('canvas')
@@ -44,34 +41,41 @@ do ($ = jQuery, window, document) ->
         canvas.height = imageHeight
 
         ctx = canvas.getContext('2d')
-        ctx.drawImage(evt.target, 0, 0, imageWidth, imageHeight)
+        ctx.drawImage(image, 0, 0, imageWidth, imageHeight)
         data = canvas.toDataURL(fileType)
-        console.log(data)
-        @show_preview(data)
+        @setup_jcrop(data)
 
-    get_image_size: (width, height) ->
+    get_crop_area_size: (width, height) ->
       newWidth = width
       newHeight = height
 
       if width > height
-        if width > @options.preview_width
-          newHeight *= @options.preview_width / width
-          newWidth = @options.preview_width
+        if width > @options.jcrop_width
+          newHeight *= @options.jcrop_width / width
+          newWidth = @options.jcrop_width
       else
-        if height > @options.preview_height
-          newWidth *= @options.preview_height / height
-          newHeight = @options.preview_height
+        if height > @options.jcrop_height
+          newWidth *= @options.jcrop_height / height
+          newHeight = @options.jcrop_height
       return {width: newWidth, height: newHeight}
-  
-    show_preview: (data) ->
-      console.log("preview")
+
+    setup_jcrop: (data) ->
       $img = $("<img>")
       $img.prop('src', data)
-      $(@element).after($img)
+      $img.addClass('jcrop-image')
+      @widgetContainer.append($img)
+      $img.Jcrop({
+        onChange: @on_jcrop_select,
+        onSelect: @on_jcrop_select,
+        aspectRatio: @options.ratio
+      })
+
+    on_jcrop_select: (coords) =>
+      console.log(coords)
 
   # A really lightweight plugin wrapper around the constructor,
   # preventing against multiple instantiations
   $.fn[pluginName] = (options) ->
     @each ->
       if !$.data(@, "plugin_#{pluginName}")
-        $.data(@, "plugin_#{pluginName}", new Plugin(@, options))
+        $.data(@, "plugin_#{pluginName}", new JCropFileInput(@, options))

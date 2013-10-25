@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>jQuery Boilerplate</title>
+    <title>JCrop File Input Demo</title>
     <script src="../bower_components/jquery/jquery.js"></script>
     <script src="../bower_components/jcrop/js/jquery.Jcrop.js"></script>
     <script src="../dist/jcrop-fileinput.js"></script>
+    <link rel="stylesheet" href="../bower_components/jcrop/css/jquery.Jcrop.css" title="" type="" />
   </head>
   <body>
     <form action="post" method="get" accept-charset="utf-8">
@@ -12,7 +13,7 @@
     </form>
     <script>
       $(function() {
-        $("#fileinput").jCropFileInput({
+        $("#fileinput").JCropFileInput({
           preview_height: 150,
           preview_width: 150
         });
