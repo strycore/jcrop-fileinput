@@ -76,20 +76,23 @@ do ($ = jQuery, window, document) ->
       $img.prop('src', data)
       $img.addClass('jcrop-image')
       @widgetContainer.append($img)
-      $img.Jcrop({
-        onChange: @on_jcrop_select,
-        onSelect: @on_jcrop_select,
-        aspectRatio: @options.ratio
-      })
+      instance = this
+      $img.Jcrop(
+        {
+          onChange: @on_jcrop_select,
+          onSelect: @on_jcrop_select,
+          aspectRatio: @options.ratio
+        }, () ->
+          instance.jcrop_api = this
+      )
 
     on_jcrop_select: (coords) =>
       @crop_original_image(coords)
 
     crop_original_image: (coords) ->
-      console.log(coords)
-      console.log(@original_width, @original_height)
+      if not coords
+        return
       factor = @original_width / @options.jcrop_width
-      console.log("Factor: ", factor)
       canvas = @targetCanvas
       origin_x = coords.x * factor
       origin_y = coords.y * factor
@@ -97,17 +100,24 @@ do ($ = jQuery, window, document) ->
       canvas_height = coords.h * factor
       canvas.width = canvas_width
       canvas.height = canvas_height
-
-      console.log(origin_x, origin_y, canvas_width, canvas_height)
       ctx = canvas.getContext('2d')
-      ctx.drawImage(@original_image,
-                    origin_x, origin_y, canvas_width, canvas_height
-                    0, 0, canvas_width, canvas_height
+      ctx.drawImage(
+        @original_image,
+        origin_x, origin_y, canvas_width, canvas_height,
+        0, 0, canvas_width, canvas_height
       )
 
-  # A really lightweight plugin wrapper around the constructor,
-  # preventing against multiple instantiations
+    set_ratio: (ratio_value) ->
+      if not @jcrop_api
+        return
+      @jcrop_api.setOptions({aspectRatio: ratio_value})
+
   $.fn[pluginName] = (options) ->
     @each ->
       if !$.data(@, "plugin_#{pluginName}")
         $.data(@, "plugin_#{pluginName}", new JCropFileInput(@, options))
+      else
+        instance = $.data(@, "plugin_#{pluginName}")
+        for option, value of options
+          if option == 'ratio'
+            instance.set_ratio(value)
