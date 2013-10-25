@@ -156,6 +156,10 @@ do ($ = jQuery, window, document) ->
         0, 0, canvas_width, canvas_height
       )
 
+    set_options: (options) ->
+      @options = $.extend({}, @options, options)
+      @set_ratio(@options.ratio)
+    
     set_ratio: (ratio_value) ->
       if not @jcrop_api
         return
@@ -167,6 +171,4 @@ do ($ = jQuery, window, document) ->
         $.data(@, "plugin_#{pluginName}", new JCropFileInput(@, options))
       else
         instance = $.data(@, "plugin_#{pluginName}")
-        for option, value of options
-          if option == "ratio"
-            instance.set_ratio(value)
+        instance.set_options(options)
