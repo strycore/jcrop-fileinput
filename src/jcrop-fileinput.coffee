@@ -107,9 +107,14 @@ do ($ = jQuery, window, document) ->
         {
           onChange: @on_jcrop_select,
           onSelect: @on_jcrop_select,
-          aspectRatio: @options.ratio
+          aspectRatio: @options.ratio,
+          bgColor: 'white',
+          bgOpacity: 0.5,
         }, () ->
-          instance.jcrop_api = this
+          api = this
+          api.setSelect([0,0,$img.width(), $img.height()])
+          instance.jcrop_api = api
+
       )
 
     on_jcrop_select: (coords) =>
