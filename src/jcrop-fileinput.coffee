@@ -19,31 +19,43 @@ do ($ = jQuery, window, document) ->
       $(@element).on('change', @on_fileinput_change)
       @widgetContainer = $("<div>")
       @widgetContainer.addClass('jcrop-fileinput-container')
+      @targetCanvas = document.createElement('canvas')
+      @widgetContainer.append($(@targetCanvas))
       $(@element).after(@widgetContainer)
   
     on_fileinput_change: (evt) =>
       file = evt.target.files[0]
       reader = new FileReader()
       reader.onloadend = (evt) =>
-        @resize_image(reader.result, file)
+        @original_filetype = file.type
+        @original_image = @build_image(reader.result, @on_original_image_loaded)
       reader.readAsDataURL(file)
 
-    resize_image: (data, file) ->
-      fileType = file.type
+    on_original_image_loaded: (image) =>
+      @original_width = image.width
+      @original_height = image.height
+      @resize_image(image)
+      
+    build_image: (image_data, callback) ->
       image = document.createElement('img')
-      image.src = data
+      image.src = image_data
       image.onload = (evt) =>
-        size = @get_crop_area_size(image.width, image.height)
-        imageWidth = size.width
-        imageHeight = size.height
-        canvas = document.createElement('canvas')
-        canvas.width = imageWidth
-        canvas.height = imageHeight
+        if callback
+          callback(image)
+      return image
 
-        ctx = canvas.getContext('2d')
-        ctx.drawImage(image, 0, 0, imageWidth, imageHeight)
-        data = canvas.toDataURL(fileType)
-        @setup_jcrop(data)
+    resize_image: (image) ->
+      size = @get_crop_area_size(image.width, image.height)
+      canvas_width = size.width
+      canvas_height = size.height
+      canvas = document.createElement('canvas')
+      canvas.width = canvas_width
+      canvas.height = canvas_height
+
+      ctx = canvas.getContext('2d')
+      ctx.drawImage(image, 0, 0, canvas_width, canvas_height)
+      canvas_image_data = canvas.toDataURL(@original_filetype)
+      @setup_jcrop(canvas_image_data)
 
     get_crop_area_size: (width, height) ->
       newWidth = width
@@ -71,7 +83,27 @@ do ($ = jQuery, window, document) ->
       })
 
     on_jcrop_select: (coords) =>
+      @crop_original_image(coords)
+
+    crop_original_image: (coords) ->
       console.log(coords)
+      console.log(@original_width, @original_height)
+      factor = @original_width / @options.jcrop_width
+      console.log("Factor: ", factor)
+      canvas = @targetCanvas
+      origin_x = coords.x * factor
+      origin_y = coords.y * factor
+      canvas_width = coords.w * factor
+      canvas_height = coords.h * factor
+      canvas.width = canvas_width
+      canvas.height = canvas_height
+
+      console.log(origin_x, origin_y, canvas_width, canvas_height)
+      ctx = canvas.getContext('2d')
+      ctx.drawImage(@original_image,
+                    origin_x, origin_y, canvas_width, canvas_height
+                    0, 0, canvas_width, canvas_height
+      )
 
   # A really lightweight plugin wrapper around the constructor,
   # preventing against multiple instantiations
