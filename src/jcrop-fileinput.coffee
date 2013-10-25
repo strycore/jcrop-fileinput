@@ -41,7 +41,6 @@ do ($ = jQuery, window, document) ->
       reader.readAsDataURL(file)
 
       # Reset the input field by replacing it with a clone
-      console.log(@element)
       $(@element).replaceWith($(@element).val('').clone(true))
 
     on_original_image_loaded: (image) =>
@@ -141,7 +140,11 @@ do ($ = jQuery, window, document) ->
     crop_original_image: (coords) ->
       if not coords
         return
-      factor = @original_width / @options.jcrop_width
+      if @original_width > @original_height
+        factor = @original_width / @options.jcrop_width
+      else
+        factor = @original_height / @options.jcrop_height
+
       canvas = @targetCanvas
       origin_x = coords.x * factor
       origin_y = coords.y * factor
