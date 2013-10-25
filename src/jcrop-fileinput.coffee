@@ -3,10 +3,12 @@ do ($ = jQuery, window, document) ->
   pluginName = "JCropFileInput"
   defaults =
     ratio: undefined,
-    jcrop_width: "640",
-    jcrop_height: "480",
-    preview_height: "150",
-    preview_width: "150",
+    jcrop_width: 640,
+    jcrop_height: 480,
+    scale_height: undefined,
+    scale_width: undefined,
+    max_height: 9999,
+    max_width: 9999,
     save_callback: undefined
 
   class JCropFileInput
@@ -28,7 +30,6 @@ do ($ = jQuery, window, document) ->
       @widgetContainer = $("<div>")
       @widgetContainer.addClass("jcrop-fileinput-container")
       @targetCanvas = document.createElement("canvas")
-      #@widgetContainer.append($(@targetCanvas))
       @button_wrapper.after(@widgetContainer)
   
     on_fileinput_change: (evt) =>
@@ -39,6 +40,10 @@ do ($ = jQuery, window, document) ->
         @original_image = @build_image(reader.result, @on_original_image_loaded)
       reader.readAsDataURL(file)
 
+      # Reset the input field by replacing it with a clone
+      console.log(@element)
+      $(@element).replaceWith($(@element).val('').clone(true))
+
     on_original_image_loaded: (image) =>
       @original_width = image.width
       @original_height = image.height
@@ -46,10 +51,21 @@ do ($ = jQuery, window, document) ->
       
     on_save: (evt) =>
       evt.preventDefault()
+      
       image_data = @targetCanvas.toDataURL(@original_filetype)
       @jcrop_api.destroy()
       @button_wrapper.slideDown()
       @widgetContainer.empty()
+      if @options.scale_width and @options.scale_height
+        image = @build_image(image_data)
+        image_data = @get_resized_image(image,
+                                        @options.scale_width,
+                                        @options.scale_height)
+      if @options.max_width or @options.scale_height
+        image = @build_image(image_data)
+        size = @get_max_size(image.width, image.height,
+                             @options.max_width, @options.max_height)
+        image_data = @get_resized_image(image, size.width, size.height)
       if @options.save_callback
         @options.save_callback(image_data)
 
@@ -67,31 +83,34 @@ do ($ = jQuery, window, document) ->
       $save_button.on('click', @on_save)
       $toolbar.append($save_button)
 
-    resize_image: (image) ->
-      size = @get_crop_area_size(image.width, image.height)
-      canvas_width = size.width
-      canvas_height = size.height
+    get_resized_image: (image, width, height) ->
+      canvas_width = width
+      canvas_height = height
       canvas = document.createElement("canvas")
       canvas.width = canvas_width
       canvas.height = canvas_height
-
       ctx = canvas.getContext("2d")
       ctx.drawImage(image, 0, 0, canvas_width, canvas_height)
-      canvas_image_data = canvas.toDataURL(@original_filetype)
+      canvas.toDataURL(@original_filetype)
+
+    resize_image: (image) ->
+      size = @get_max_size(image.width, image.height,
+                           @options.jcrop_width, @options.jcrop_height)
+      canvas_image_data = @get_resized_image(image, size.width, size.height)
       @setup_jcrop(canvas_image_data)
 
-    get_crop_area_size: (width, height) ->
+    get_max_size: (width, height, max_width, max_height) ->
       newWidth = width
       newHeight = height
 
       if width > height
-        if width > @options.jcrop_width
-          newHeight *= @options.jcrop_width / width
-          newWidth = @options.jcrop_width
+        if width > max_width
+          newHeight *= max_width / width
+          newWidth = max_width
       else
-        if height > @options.jcrop_height
-          newWidth *= @options.jcrop_height / height
-          newHeight = @options.jcrop_height
+        if height > max_height
+          newWidth *= max_height / height
+          newHeight = max_height
       return {width: newWidth, height: newHeight}
 
     setup_jcrop: (data) ->
@@ -114,7 +133,6 @@ do ($ = jQuery, window, document) ->
           api = this
           api.setSelect([0,0,$img.width(), $img.height()])
           instance.jcrop_api = api
-
       )
 
     on_jcrop_select: (coords) =>

@@ -8,6 +8,24 @@
     <link rel="stylesheet" href="../bower_components/jcrop/css/jquery.Jcrop.css" />
     <link rel="stylesheet" href="../dist/jcrop-fileinput.css" />
     <style type="text/css" media="all">
+      body {
+        font-family: sans;
+      }
+      form {
+
+        margin: 100px auto;
+        width: 640px;
+        border: 1px solid #CCC;
+        border-radius: 2px;
+        padding: 20px;
+      }
+      legend {
+        color: #AAA;
+        font-size: 1.2em;
+        margin-bottom: 1.5em;
+        border-bottom: 1px solid #AAA;
+        width: 100%;
+      }
       .field-container {
         width: 640px;
       }
@@ -15,6 +33,7 @@
   </head>
   <body>
     <form action="post" method="get" accept-charset="utf-8">
+      <legend>Image uploader</legend>
       <div class="field-container">
        <input type="file" name="example-input" id="fileinput" />
       </div>
@@ -31,8 +50,10 @@
         $("#fileinput").JCropFileInput({
           preview_height: 150,
           preview_width: 150,
+          max_height: 500,
+          max_width: 500,
           save_callback: show_saved_image,
-          ratio: 4/3
+          ratio: 1
         });
       });
     </script>
