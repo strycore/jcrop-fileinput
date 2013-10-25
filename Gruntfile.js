@@ -45,13 +45,26 @@ module.exports = function(grunt) {
 			}
 		},
 
+    sass: {
+      dist: {
+        files: {
+          "dist/jcrop-fileinput.css": "src/jcrop-fileinput.scss"
+        }
+      }
+    },
+
+    // Watch
     watch: {
       options: {
         livereload: true
       },
       coffee: {
-        files: 'src/jcrop-fileinput.coffee',
-        tasks: ['coffee']
+        files: "src/jcrop-fileinput.coffee",
+        tasks: ["coffee"]
+      },
+      sass: {
+        files: "src/jcrop-fileinput.scss",
+        tasks: ["sass"]
       }
     }
 
@@ -60,7 +73,8 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks("grunt-contrib-jshint");
 	grunt.loadNpmTasks("grunt-contrib-uglify");
 	grunt.loadNpmTasks("grunt-contrib-coffee");
+	grunt.loadNpmTasks("grunt-contrib-sass");
 	grunt.loadNpmTasks("grunt-contrib-watch");
 
-	grunt.registerTask("default", ["jshint", "uglify"]);
+	grunt.registerTask("default", ["jshint", "coffee", "sass", "uglify"]);
 };
