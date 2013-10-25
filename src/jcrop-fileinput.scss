@@ -1,1 +1,35 @@
+.jcrop-fileinput-wrapper {
+  border-radius: 2px;
+  position: relative;
+  overflow: hidden;
+  text-align: center;
+  z-index: 2;
+  input[type=file] {
+    font-size: 300px;
+    height: 1000px;
+    position: absolute;
+    right: 0;
+    top: 0;
+    opacity: 0.2;
+    cursor: pointer;
+    z-index: 0;
+  }
+  button {
+    color: #222;
+    font-size: 0.8em;
+    border: 1px solid #444;
+    padding: 7px 42px;
+    background-color: transparent;
+  }
+}
 
+.jcrop-fileinput-toolbar {
+  text-align: right;
+  button {
+    padding: 7px; 
+  }
+}
+
+.jcrop-fileinput-container {
+  display: none;
+}

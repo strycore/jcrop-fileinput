@@ -7,16 +7,31 @@
     <script src="../dist/jcrop-fileinput.js"></script>
     <link rel="stylesheet" href="../bower_components/jcrop/css/jquery.Jcrop.css" />
     <link rel="stylesheet" href="../dist/jcrop-fileinput.css" />
+    <style type="text/css" media="all">
+      .field-container {
+        width: 640px;
+      }
+    </style>
   </head>
   <body>
     <form action="post" method="get" accept-charset="utf-8">
+      <div class="field-container">
        <input type="file" name="example-input" id="fileinput" />
+      </div>
     </form>
     <script>
+      var show_saved_image = function (image_data) {
+        console.log(image_data)
+        image = document.createElement('img')
+        image.src = image_data
+        $('form').after(image)
+      }
+
       $(function() {
         $("#fileinput").JCropFileInput({
           preview_height: 150,
-          preview_width: 150
+          preview_width: 150,
+          save_callback: show_saved_image
         });
       });
     </script>
