@@ -1,8 +1,15 @@
+.jcrop-base-button {
+  background-color: #0060DF;
+  border: none;
+  color: #EEE;
+  padding: 7px 14px; 
+  border-radius: 2px;
+  font-size: 0.8em;
+}
 .jcrop-fileinput-wrapper {
   border-radius: 2px;
   position: relative;
   overflow: hidden;
-  text-align: center;
   z-index: 2;
   input[type=file] {
     font-size: 300px;
@@ -15,18 +22,17 @@
     z-index: 0;
   }
   button {
-    color: #222;
-    font-size: 0.8em;
-    border: 1px solid #444;
-    padding: 7px 42px;
-    background-color: transparent;
+    @extend .jcrop-base-button;
   }
 }
 
 .jcrop-fileinput-toolbar {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid #DEDEDE;
   text-align: right;
   button {
-    padding: 7px; 
+    @extend .jcrop-base-button;
   }
 }
 

@@ -47,6 +47,9 @@ do ($ = jQuery, window, document) ->
     on_save: (evt) =>
       evt.preventDefault()
       image_data = @targetCanvas.toDataURL(@original_filetype)
+      @jcrop_api.destroy()
+      @button_wrapper.slideDown()
+      @widgetContainer.empty()
       if @options.save_callback
         @options.save_callback(image_data)
 
