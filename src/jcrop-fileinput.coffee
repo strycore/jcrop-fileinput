@@ -62,7 +62,7 @@ do ($ = jQuery, window, document) ->
         image_data = @get_resized_image(image,
                                         @options.scale_width,
                                         @options.scale_height)
-      if @options.max_width or @options.scale_height
+      if @options.max_width or @options.max_height
         image = @build_image(image_data)
         size = @get_max_size(image.width, image.height,
                              @options.max_width, @options.max_height)
@@ -91,7 +91,7 @@ do ($ = jQuery, window, document) ->
       canvas.width = canvas_width
       canvas.height = canvas_height
       ctx = canvas.getContext("2d")
-      ctx.drawImage(image, 0, 0, canvas_width, canvas_height)
+      ctx.drawImage(image, 0, 0, width, height)
       canvas.toDataURL(@original_filetype)
 
     resize_image: (image) ->
