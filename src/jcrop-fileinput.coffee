@@ -169,10 +169,13 @@ do ($ = jQuery, window, document) ->
     crop_original_image: (coords) ->
       if not coords
         return
-      if @original_width > @original_height
-        factor = @original_width / @options.jcrop_width
+      if @original_width > @options.jcrop_width or @original_height > @options.jcrop_height
+        if @original_width > @original_height
+          factor = @original_width / @options.jcrop_width
+        else
+          factor = @original_height / @options.jcrop_height
       else
-        factor = @original_height / @options.jcrop_height
+        factor = 1
 
       canvas = @targetCanvas
       origin_x = coords.x * factor
