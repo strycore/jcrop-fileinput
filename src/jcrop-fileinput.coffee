@@ -37,7 +37,6 @@ do ($ = jQuery, window, document) ->
       @widgetContainer = $("<div>")
       @widgetContainer.addClass("jcrop-fileinput-container")
       @targetCanvas = document.createElement("canvas")
-      $('body').append($(@targetCanvas))
       @button_wrapper.after(@widgetContainer)
 
     on_initial_ready: (image) =>
