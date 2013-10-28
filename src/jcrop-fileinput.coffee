@@ -19,8 +19,8 @@ do ($ = jQuery, window, document) ->
       @init()
 
     init: ->
-      element_wrapper = document.createElement('div')
-      element_wrapper.className ='jcrop-fileinput-wrapper'
+      element_wrapper = document.createElement("div")
+      element_wrapper.className ="jcrop-fileinput-wrapper"
       $(@element).wrap(element_wrapper)
       # Get a reference to the wrapping div as the wrap function makes a clone.
       @button_wrapper = $(@element).parent()
@@ -31,7 +31,7 @@ do ($ = jQuery, window, document) ->
       @widgetContainer.addClass("jcrop-fileinput-container")
       @targetCanvas = document.createElement("canvas")
       @button_wrapper.after(@widgetContainer)
-  
+
     on_fileinput_change: (evt) =>
       file = evt.target.files[0]
       reader = new FileReader()
@@ -41,16 +41,16 @@ do ($ = jQuery, window, document) ->
       reader.readAsDataURL(file)
 
       # Reset the input field by replacing it with a clone
-      $(@element).replaceWith($(@element).val('').clone(true))
+      $(@element).replaceWith($(@element).val("").clone(true))
 
     on_original_image_loaded: (image) =>
       @original_width = image.width
       @original_height = image.height
       @resize_image(image)
-      
+
     on_save: (evt) =>
       evt.preventDefault()
-      
+
       image_data = @targetCanvas.toDataURL(@original_filetype)
       @jcrop_api.destroy()
       @button_wrapper.slideDown()
@@ -71,15 +71,15 @@ do ($ = jQuery, window, document) ->
     build_image: (image_data, callback) ->
       image = document.createElement("img")
       image.src = image_data
-      image.onload = () =>
+      image.onload = () ->
         if callback
           callback(image)
       return image
 
     build_toolbar: () ->
-      $toolbar = $("<div>").addClass('jcrop-fileinput-toolbar')
+      $toolbar = $("<div>").addClass("jcrop-fileinput-toolbar")
       $save_button = $("<button>Save</button>")
-      $save_button.on('click', @on_save)
+      $save_button.on("click", @on_save)
       $toolbar.append($save_button)
 
     get_resized_image: (image, width, height) ->
@@ -126,7 +126,7 @@ do ($ = jQuery, window, document) ->
           onChange: @on_jcrop_select,
           onSelect: @on_jcrop_select,
           aspectRatio: @options.ratio,
-          bgColor: 'white',
+          bgColor: "white",
           bgOpacity: 0.5,
         }, () ->
           api = this
@@ -162,7 +162,7 @@ do ($ = jQuery, window, document) ->
     set_options: (options) ->
       @options = $.extend({}, @options, options)
       @set_ratio(@options.ratio)
-    
+
     set_ratio: (ratio_value) ->
       if not @jcrop_api
         return
