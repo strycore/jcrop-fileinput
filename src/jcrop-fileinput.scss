@@ -3,7 +3,7 @@
   background-color: #0030AF;
   border: none;
   color: #EEE;
-  padding: 7px 14px; 
+  padding: 7px 14px;
   border-radius: 2px;
   font-size: 0.8em;
 }
@@ -40,4 +40,12 @@
 
 .jcrop-fileinput-container {
   display: none;
+}
+
+// Workaround bug in JCrop (https://github.com/tapmodo/Jcrop/issues/36)
+.jcrop-keymgr {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  opacity: 0;
 }
