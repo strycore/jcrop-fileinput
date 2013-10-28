@@ -25,7 +25,7 @@ do ($ = jQuery, window, document) ->
       element_wrapper.className ="jcrop-fileinput-wrapper"
       $(@element).wrap(element_wrapper)
       $(@element).on("change", @on_fileinput_change)
-      
+
       # Get a reference to the wrapping div as the wrap function makes a clone.
       @button_wrapper = $(@element).parent()
       $upload_button = $("<button>#{@options.upload_label}</button>")
@@ -42,18 +42,22 @@ do ($ = jQuery, window, document) ->
 
     on_initial_ready: (image) =>
       # Fires when image in initial value of the input field is reader
+
+      image_width = image.width
+      image_height = image.height
       $image = $(image)
+
       $image.addClass('jcrop-fileinput-thumbnail')
       $image.on('click', () =>
         @original_image = image
-        @original_width = image.width
-        @original_height = image.height
-        @targetCanvas.width = image.width
-        @targetCanvas.height = image.height
+        @original_width = image_width
+        @original_height = image_height
+        @targetCanvas.width = image_width
+        @targetCanvas.height = image_height
         @setup_jcrop(image.src)
       )
       $(@element).parent().before($image)
-    
+
     on_fileinput_change: (evt) =>
       file = evt.target.files[0]
       reader = new FileReader()
