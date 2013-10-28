@@ -9,7 +9,9 @@ do ($ = jQuery, window, document) ->
     scale_width: undefined,
     max_height: 9999,
     max_width: 9999,
-    save_callback: undefined
+    save_callback: undefined,
+    upload_label: "Upload a file",
+    save_label: "Save"
 
   class JCropFileInput
     constructor: (@element, options) ->
@@ -24,7 +26,7 @@ do ($ = jQuery, window, document) ->
       $(@element).wrap(element_wrapper)
       # Get a reference to the wrapping div as the wrap function makes a clone.
       @button_wrapper = $(@element).parent()
-      $(@element).after("<button>Upload a file</button>")
+      $(@element).after("<button>#{@options.upload_label}</button>")
       $(@element).on("change", @on_fileinput_change)
 
       @widgetContainer = $("<div>")
@@ -78,7 +80,7 @@ do ($ = jQuery, window, document) ->
 
     build_toolbar: () ->
       $toolbar = $("<div>").addClass("jcrop-fileinput-toolbar")
-      $save_button = $("<button>Save</button>")
+      $save_button = $("<button>#{@options.save_label}</button>")
       $save_button.on("click", @on_save)
       $toolbar.append($save_button)
 
