@@ -57,13 +57,15 @@ do ($ = jQuery, window, document) ->
       @jcrop_api.destroy()
       @button_wrapper.slideDown()
       @widgetContainer.empty()
+      @build_image(image_data, @on_image_ready)
+
+    on_image_ready: (image) =>
+      image_data = image.src
       if @options.scale_width and @options.scale_height
-        image = @build_image(image_data)
         image_data = @get_resized_image(image,
                                         @options.scale_width,
                                         @options.scale_height)
-      if @options.max_width or @options.max_height
-        image = @build_image(image_data)
+      else if @options.max_width or @options.max_height
         size = @get_max_size(image.width, image.height,
                              @options.max_width, @options.max_height)
         image_data = @get_resized_image(image, size.width, size.height)
