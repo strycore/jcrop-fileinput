@@ -24,16 +24,36 @@ do ($ = jQuery, window, document) ->
       element_wrapper = document.createElement("div")
       element_wrapper.className ="jcrop-fileinput-wrapper"
       $(@element).wrap(element_wrapper)
+      $(@element).on("change", @on_fileinput_change)
+      
       # Get a reference to the wrapping div as the wrap function makes a clone.
       @button_wrapper = $(@element).parent()
-      $(@element).after("<button>#{@options.upload_label}</button>")
-      $(@element).on("change", @on_fileinput_change)
+      $upload_button = $("<button>#{@options.upload_label}</button>")
+      $(@element).wrap($upload_button)
+      if $(@element).attr('value')
+        initial_image_src = $(@element).attr('value')
+        @build_image(initial_image_src, @on_initial_ready)
 
       @widgetContainer = $("<div>")
       @widgetContainer.addClass("jcrop-fileinput-container")
       @targetCanvas = document.createElement("canvas")
+      $('body').append($(@targetCanvas))
       @button_wrapper.after(@widgetContainer)
 
+    on_initial_ready: (image) =>
+      # Fires when image in initial value of the input field is reader
+      $image = $(image)
+      $image.addClass('jcrop-fileinput-thumbnail')
+      $image.on('click', () =>
+        @original_image = image
+        @original_width = image.width
+        @original_height = image.height
+        @targetCanvas.width = image.width
+        @targetCanvas.height = image.height
+        @setup_jcrop(image.src)
+      )
+      $(@element).parent().before($image)
+    
     on_fileinput_change: (evt) =>
       file = evt.target.files[0]
       reader = new FileReader()
@@ -52,7 +72,6 @@ do ($ = jQuery, window, document) ->
 
     on_save: (evt) =>
       evt.preventDefault()
-
       image_data = @targetCanvas.toDataURL(@original_filetype)
       @jcrop_api.destroy()
       @button_wrapper.slideDown()
@@ -78,6 +97,8 @@ do ($ = jQuery, window, document) ->
       image.onload = () ->
         if callback
           callback(image)
+      # Warning: This will return the image but it may (and will probably not)
+      # be fully loaded. Use the callback to get the fully instanciated image.
       return image
 
     build_toolbar: () ->
