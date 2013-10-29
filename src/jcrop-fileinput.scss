@@ -1,5 +1,4 @@
 .jcrop-base-button {
-  font-weight: bold;
   background-color: #0030AF;
   border: none;
   color: #EEE;
@@ -8,23 +7,22 @@
   font-size: 0.8em;
 }
 
-.jcrop-fileinput-wrapper {
+.jcrop-fileinput-fakebutton {
+  border-radius: 2px;
+  position: relative;
+  overflow: hidden;
+  z-index: 2;
+  display: inline-block;
+  @extend .jcrop-base-button;
   input[type=file] {
-    font-size: 300px;
-    height: 1000px;
+    font-size: 40px;
+    height: 100px;
     position: absolute;
     right: 0;
     top: 0;
-    opacity: 0.2;
+    opacity: 1;
     cursor: pointer;
     z-index: 0;
-  }
-  button {
-    border-radius: 2px;
-    position: relative;
-    overflow: hidden;
-    z-index: 2;
-    @extend .jcrop-base-button;
   }
 }
 

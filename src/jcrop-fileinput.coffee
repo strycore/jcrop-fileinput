@@ -26,12 +26,11 @@ do ($ = jQuery, window, document) ->
       $(@element).wrap(element_wrapper)
       $(@element).on("change", @on_fileinput_change)
 
+      
       # Get a reference to the wrapping div as the wrap function makes a clone.
       @button_wrapper = $(@element).parent()
-      $upload_button = $("<button>#{@options.upload_label}</button>")
-      $upload_button.on('click', (evt) ->
-        evt.preventDefault()
-      )
+      $upload_button = $("<div>#{@options.upload_label}</div>")
+      $upload_button.addClass('jcrop-fileinput-fakebutton')
       $(@element).wrap($upload_button)
       if $(@element).attr('value')
         initial_image_src = $(@element).attr('value')
