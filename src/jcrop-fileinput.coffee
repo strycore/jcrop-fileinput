@@ -29,6 +29,9 @@ do ($ = jQuery, window, document) ->
       # Get a reference to the wrapping div as the wrap function makes a clone.
       @button_wrapper = $(@element).parent()
       $upload_button = $("<button>#{@options.upload_label}</button>")
+      $upload_button.on('click', (evt) ->
+        evt.preventDefault()
+      )
       $(@element).wrap($upload_button)
       if $(@element).attr('value')
         initial_image_src = $(@element).attr('value')
