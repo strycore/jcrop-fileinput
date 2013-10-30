@@ -1,4 +1,4 @@
-.jcrop-base-button {
+.jcrop-fileinput-button {
   background-color: #0030AF;
   border: none;
   color: #EEE;
@@ -13,7 +13,6 @@
   overflow: hidden;
   z-index: 2;
   display: inline-block;
-  @extend .jcrop-base-button;
   input[type=file] {
     font-size: 40px;
     height: 100px;
@@ -31,9 +30,6 @@
   padding-top: 10px;
   border-top: 1px solid #DEDEDE;
   text-align: right;
-  button {
-    @extend .jcrop-base-button;
-  }
 }
 
 .jcrop-fileinput-container {
