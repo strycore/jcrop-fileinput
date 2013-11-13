@@ -22,7 +22,7 @@ do ($ = jQuery, window, document) ->
 
     init: ->
       element_wrapper = document.createElement("div")
-      element_wrapper.className ="jcrop-fileinput-wrapper"
+      element_wrapper.className = "jcrop-fileinput-wrapper"
       $(@element).wrap(element_wrapper)
       $(@element).on("change", @on_fileinput_change)
 
@@ -62,6 +62,7 @@ do ($ = jQuery, window, document) ->
 
     on_fileinput_change: (evt) =>
       file = evt.target.files[0]
+
       reader = new FileReader()
       reader.onloadend = () =>
         @original_filetype = file.type
