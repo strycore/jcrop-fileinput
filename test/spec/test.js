@@ -1,10 +1,10 @@
-/*global describe, it */
+/*global describe, it, $, beforeEach, expect */
 "use strict";
 
 
 describe("JCrop File Inputs", function () {
 
-    var instance = undefined;
+    var instance;
 
     beforeEach(function() {
         $("#jcropupload").JCropFileInput();
@@ -36,26 +36,21 @@ describe("JCrop File Inputs", function () {
     });
 
     describe("Given init()ed JCropFileInput object", function () {
-
-
         it("has all the wrapper divs", function() {
             var elm = $("#jcropupload");
-
             expect(elm.parent().hasClass("jcrop-fileinput-fakebutton")).to.equal(true);
             expect(elm.parent().parent().hasClass("jcrop-fileinput-wrapper")).to.equal(true);
-
-
         });
     });
 
     describe("Given a fileinput change event ", function () {
 
-        it("has correct filetype", function  () {
-            var elm = $("#jcropupload");
-            console.log(elm.get(0).files);
-            elm.get(0).files.push({});
-            elm.trigger("change");
-
-        });
+        // TODO : Find a way to test input[type=file]
+        //it("has correct filetype", function  () {
+        //    var elm = $("#jcropupload");
+        //    console.log(elm.get(0).files);
+        //    elm.get(0).files.push({});
+        //    elm.trigger("change");
+        //});
     });
 });
