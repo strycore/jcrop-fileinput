@@ -56,7 +56,7 @@ module.exports = function(grunt) {
     // Watch
     watch: {
       options: {
-        livereload: true
+        livereload: 32739
       },
       coffee: {
         files: "src/jcrop-fileinput.coffee",
@@ -65,6 +65,25 @@ module.exports = function(grunt) {
       sass: {
         files: "src/jcrop-fileinput.scss",
         tasks: ["sass"]
+      }
+    },
+
+    // Local server
+    connect: {
+      options: {
+        port: 9000,
+        hostname: "*"
+      },
+      livereload: {
+        options: {
+          open: true,
+          livereload: 32739,
+          base: [
+            "bower_components",
+            "dist",
+            "demo"
+          ]
+        }
       }
     }
 
@@ -75,6 +94,8 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks("grunt-contrib-coffee");
 	grunt.loadNpmTasks("grunt-contrib-sass");
 	grunt.loadNpmTasks("grunt-contrib-watch");
+	grunt.loadNpmTasks("grunt-contrib-connect");
 
 	grunt.registerTask("default", ["jshint", "coffee", "sass", "uglify"]);
+	grunt.registerTask("server", ["connect:livereload", "watch"]);
 };
