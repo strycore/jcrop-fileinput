@@ -73,7 +73,14 @@ do ($ = jQuery, window, document) ->
       reader.readAsDataURL(file)
 
       # Reset the input field by replacing it with a clone
-      $(@element).replaceWith($(@element).val("").clone(true))
+      # This is necessary to avoid uploading the user submitted image when the
+      # actual form is uploaded.
+      # BUT: Since it will recreate a DOM element, it will loose all that was
+      # applied to it such as ... a polyfill, for example.
+      # SO: Commenting this line. You can reset the element by intercepting the
+      # submit signal on the main form. Keeping this around to keep in mind to
+      # look for a better alternative.
+      #$(@element).replaceWith($(@element).val("").clone(true))
 
     on_original_image_loaded: (image) =>
       @original_width = image.width
