@@ -42,8 +42,7 @@ do ($ = jQuery, window, document) ->
       @button_wrapper.after(@widgetContainer)
 
     on_initial_ready: (image) =>
-      # Fires when image in initial value of the input field is reader
-
+      ### Fires when image in initial value of the input field is read ###
       image_width = image.width
       image_height = image.height
       $image = $(image)
@@ -55,7 +54,7 @@ do ($ = jQuery, window, document) ->
         @original_height = image_height
         @targetCanvas.width = image_width
         @targetCanvas.height = image_height
-        @setup_jcrop(image.src)
+        @build_jcrop_widget(image.src)
       )
       $(@element).parent().before($image)
 
@@ -88,6 +87,7 @@ do ($ = jQuery, window, document) ->
       @resize_image(image)
 
     on_save: (evt) =>
+      ### Signal triggered when the save button is pressed ###
       evt.preventDefault()
       image_data = @targetCanvas.toDataURL(@original_filetype)
       @jcrop_api.destroy()
@@ -109,6 +109,7 @@ do ($ = jQuery, window, document) ->
         @options.save_callback(image_data)
 
     is_canvas_supported: () ->
+      ### Returns true if the current browser supports canvas. ###
       canv = document.createElement('canvas')
       return !!(canv.getContext && canv.getContext('2d'))
 
@@ -123,6 +124,9 @@ do ($ = jQuery, window, document) ->
       return image
 
     build_toolbar: () ->
+      ### Return a toolbar jQuery element containing actions applyable to 
+          the JCrop widget. 
+      ###
       $toolbar = $("<div>").addClass("jcrop-fileinput-toolbar")
       $save_button = $("<button>#{@options.save_label}</button>")
       $save_button.addClass("jcrop-fileinput-button")
@@ -143,7 +147,7 @@ do ($ = jQuery, window, document) ->
       size = @get_max_size(image.width, image.height,
                            @options.jcrop_width, @options.jcrop_height)
       canvas_image_data = @get_resized_image(image, size.width, size.height)
-      @setup_jcrop(canvas_image_data)
+      @build_jcrop_widget(canvas_image_data)
 
     get_max_size: (width, height, max_width, max_height) ->
       newWidth = width
@@ -159,15 +163,22 @@ do ($ = jQuery, window, document) ->
           newHeight = max_height
       return {width: newWidth, height: newHeight}
 
-    setup_jcrop: (data) ->
+    build_jcrop_widget: (data) ->
+      ### Adds a fully configured JCrop widget to the widgetContainer ###
+      @button_wrapper.slideUp()
+      instance = this  # used to keep a reference to the JCrop API
+
+      # Initial cleanup
+      @widgetContainer.find('.jcrop-image').remove()
+      @widgetContainer.find('.jcrop-fileinput-toolbar').remove()
+
+      # Element creation
       $img = $("<img>")
       $img.prop("src", data)
       $img.addClass("jcrop-image")
-      @button_wrapper.slideUp()
       @widgetContainer.append($img)
       @widgetContainer.append(@build_toolbar())
       @widgetContainer.slideDown()
-      instance = this
       $img.Jcrop(
         {
           onChange: @on_jcrop_select,
