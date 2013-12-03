@@ -43,6 +43,21 @@
         margin-right: 30px;
       }
     </style>
+
+    <script>
+      // Setup File API poyfill for shit browsers.
+      $(function(){
+        Modernizr.load({
+          test: window.FileReader,
+          nope: [
+            "polyfill/swfobject/swfobject.js",
+            "polyfill/FileReader/jquery.FileReader.js",
+            "polyfill/filereader-polyfill.js"
+          ],
+        });
+      });
+    </script>
+
   </head>
   <body>
     <form action="post" method="get" accept-charset="utf-8">

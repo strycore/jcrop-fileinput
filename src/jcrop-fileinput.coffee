@@ -26,7 +26,6 @@ do ($ = jQuery, window, document) ->
       $(@element).wrap(element_wrapper)
       $(@element).on("change", @on_fileinput_change)
 
-
       # Get a reference to the wrapping div as the wrap function makes a clone.
       @button_wrapper = $(@element).parent()
       $upload_button = $("<div>#{@options.upload_label}</div>")
@@ -65,8 +64,12 @@ do ($ = jQuery, window, document) ->
 
       reader = new FileReader()
       reader.onloadend = () =>
-        @original_filetype = file.type
-        @original_image = @build_image(reader.result, @on_original_image_loaded)
+        if @is_canvas_supported()
+          @original_filetype = file.type
+          @original_image = @build_image(reader.result,
+                                          @on_original_image_loaded)
+        else if @options.save_callback
+          @options.save_callback(reader.result)
       reader.readAsDataURL(file)
 
       # Reset the input field by replacing it with a clone
@@ -97,6 +100,10 @@ do ($ = jQuery, window, document) ->
         image_data = @get_resized_image(image, size.width, size.height)
       if @options.save_callback
         @options.save_callback(image_data)
+
+    is_canvas_supported: () ->
+      canv = document.createElement('canvas')
+      return !!(canv.getContext && canv.getContext('2d'))
 
     build_image: (image_data, callback) ->
       image = document.createElement("img")
