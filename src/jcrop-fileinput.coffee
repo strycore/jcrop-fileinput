@@ -37,8 +37,8 @@ do ($ = jQuery, window, document) ->
       $upload_button.addClass('jcrop-fileinput-fakebutton')
       $upload_button.addClass('jcrop-fileinput-button')
       $(@element).wrap($upload_button)
-      if $(@element).attr('value')
-        initial_image_src = $(@element).attr('value')
+      if $(@element).attr('data-initial')
+        initial_image_src = $(@element).attr('data-initial')
         @build_image(initial_image_src, @on_initial_ready)
 
       @widgetContainer = $("<div>")
