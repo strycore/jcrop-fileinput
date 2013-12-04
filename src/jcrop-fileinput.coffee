@@ -63,6 +63,11 @@ do ($ = jQuery, window, document) ->
         $delete_button.hide()
       $(@element).parent().after($delete_button)
 
+      # Initialize status bar
+      $status = $("<div></div>")
+      $status.addClass("jcrop-fileinput-status")
+      @controls_root.append($status)
+
       # Handle initial value of widget
       if $(@element).attr('data-initial')
         initial_image_src = $(@element).attr('data-initial')
@@ -83,6 +88,8 @@ do ($ = jQuery, window, document) ->
       @original_height = image.height
       @targetCanvas.width = image.width
       @targetCanvas.height = image.height
+
+      @set_status_text("Current: #{image.src} (#{image.width}x#{image.height}px)")
       $image = $(image)
       $image.addClass('jcrop-fileinput-thumbnail')
       $image.on('click', @on_crop_click)
@@ -97,6 +104,7 @@ do ($ = jQuery, window, document) ->
 
       # Delete preview
       @controls_root.find('.jcrop-fileinput-thumbnail').remove()
+      @set_status_text('')
 
       # Run callback
       if @options.delete_callback
@@ -178,6 +186,10 @@ do ($ = jQuery, window, document) ->
       $save_button.addClass("jcrop-fileinput-button")
       $save_button.on("click", @on_save)
       $toolbar.append($save_button)
+    
+    set_status_text: (text) ->
+      status_bar = @controls_root.find('.jcrop-fileinput-status')
+      status_bar.text(text)
 
     get_resized_image: (image, width, height) ->
       canvas_width = width
