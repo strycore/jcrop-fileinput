@@ -5,6 +5,7 @@
   padding: 7px 14px;
   border-radius: 2px;
   font-size: 0.8em;
+  margin: 0 10px;
 }
 
 .jcrop-fileinput-fakebutton {
@@ -43,8 +44,8 @@
   padding: 5px;
   border-radius: 2px;
   border: 1px solid #DEDEDE;
-  vertical-align: middle;
-  margin-right: 20px;
+  vertical-align: top;
+  margin-right: 10px;
 }
 
 // Workaround bug in JCrop (https://github.com/tapmodo/Jcrop/issues/36)

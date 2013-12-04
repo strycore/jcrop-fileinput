@@ -10,6 +10,9 @@ do ($ = jQuery, window, document) ->
     max_height: 9999,
     max_width: 9999,
     save_callback: undefined,
+    delete_callback: undefined,
+    show_crop_button: false,
+    show_delete_button: false,
     labels: {
       upload: 'Upload an image',
       change: 'Upload an image',
@@ -26,17 +29,23 @@ do ($ = jQuery, window, document) ->
       @init()
 
     init: ->
-      element_wrapper = document.createElement("div")
-      element_wrapper.className = "jcrop-fileinput-wrapper"
-      $(@element).wrap(element_wrapper)
+      # Connect file input to signal
       $(@element).on("change", @on_fileinput_change)
-
+      
+      # Wrap file input in root element
+      _controls_root = document.createElement("div")
+      _controls_root.className = "jcrop-fileinput-wrapper"
+      $(@element).wrap(_controls_root)
       # Get a reference to the wrapping div as the wrap function makes a clone.
-      @button_wrapper = $(@element).parent()
+      @controls_root = $(@element).parent()
+
+      # Wrap the file input inside a fake button, in order to style it nicely.
       $upload_button = $("<div>#{@options.labels.upload}</div>")
       $upload_button.addClass('jcrop-fileinput-fakebutton')
       $upload_button.addClass('jcrop-fileinput-button')
       $(@element).wrap($upload_button)
+
+      # Handle initial value of widget
       if $(@element).attr('data-initial')
         initial_image_src = $(@element).attr('data-initial')
         @build_image(initial_image_src, @on_initial_ready)
@@ -44,24 +53,46 @@ do ($ = jQuery, window, document) ->
       @widgetContainer = $("<div>")
       @widgetContainer.addClass("jcrop-fileinput-container")
       @targetCanvas = document.createElement("canvas")
-      @button_wrapper.after(@widgetContainer)
+      @controls_root.after(@widgetContainer)
 
     on_initial_ready: (image) =>
       ### Fires when image in initial value of the input field is read ###
-      image_width = image.width
-      image_height = image.height
-      $image = $(image)
 
-      $image.addClass('jcrop-fileinput-thumbnail')
-      $image.on('click', () =>
+      on_initial_click = (evt) =>
+        evt.preventDefault()
         @original_image = image
-        @original_width = image_width
-        @original_height = image_height
-        @targetCanvas.width = image_width
-        @targetCanvas.height = image_height
+        @original_width = image.width
+        @original_height = image.height
+        @targetCanvas.width = image.width
+        @targetCanvas.height = image.height
         @build_jcrop_widget(image.src)
-      )
+
+      $image = $(image)
+      $image.addClass('jcrop-fileinput-thumbnail')
+      $image.on('click', on_initial_click)
       $(@element).parent().before($image)
+      
+      # FIXME, move this, must also be available when image is uploaded
+      if @options.show_crop_button
+        $crop_button = $("<button>#{@options.labels.crop}</button>")
+        $crop_button.addClass("jcrop-fileinput-button")
+        $crop_button.addClass("jcrop-fileinput-crop-button")
+        $crop_button.on('click', on_initial_click)
+        $(@element).parent().before($crop_button)
+
+      if @options.show_delete_button
+        $delete_button = $("<button>#{@options.labels.delete}</button>")
+        $delete_button.addClass("jcrop-fileinput-button")
+        $delete_button.addClass("jcrop-fileinput-delete-button")
+        $delete_button.on('click', @on_delete_click)
+        $(@element).parent().after($delete_button)
+
+    on_delete_click: (evt) =>
+      # Delete preview
+      #
+      # Run callback
+      if @options.delete_callback
+        @options.delete_callback
 
     on_fileinput_change: (evt) =>
       file = evt.target.files[0]
@@ -71,7 +102,7 @@ do ($ = jQuery, window, document) ->
         if @is_canvas_supported()
           @original_filetype = file.type
           @original_image = @build_image(reader.result,
-                                          @on_original_image_loaded)
+                                          @on_uploaded_image_load)
         else if @options.save_callback
           @options.save_callback(reader.result)
       reader.readAsDataURL(file)
@@ -86,7 +117,7 @@ do ($ = jQuery, window, document) ->
       # look for a better alternative.
       #$(@element).replaceWith($(@element).val("").clone(true))
 
-    on_original_image_loaded: (image) =>
+    on_uploaded_image_load: (image) =>
       @original_width = image.width
       @original_height = image.height
       @resize_image(image)
@@ -96,7 +127,7 @@ do ($ = jQuery, window, document) ->
       evt.preventDefault()
       image_data = @targetCanvas.toDataURL(@original_filetype)
       @jcrop_api.destroy()
-      @button_wrapper.slideDown()
+      @controls_root.slideDown()
       @widgetContainer.empty()
       @build_image(image_data, @on_image_ready)
 
@@ -119,17 +150,19 @@ do ($ = jQuery, window, document) ->
       return !!(canv.getContext && canv.getContext('2d'))
 
     build_image: (image_data, callback) ->
+      ### Returns an image HTML element containing image data
+          The image may (and will probably will not) be fully loaded when the
+          image returns.  Use the callback to get the fully instanciated image.
+      ###
       image = document.createElement("img")
       image.src = image_data
       image.onload = () ->
         if callback
           callback(image)
-      # Warning: This will return the image but it may (and will probably not)
-      # be fully loaded. Use the callback to get the fully instanciated image.
       return image
 
     build_toolbar: () ->
-      ### Return a toolbar jQuery element containing actions applyable to 
+      ### Return a toolbar jQuery element containing actions applyable to
           the JCrop widget. 
       ###
       $toolbar = $("<div>").addClass("jcrop-fileinput-toolbar")
@@ -170,7 +203,7 @@ do ($ = jQuery, window, document) ->
 
     build_jcrop_widget: (data) ->
       ### Adds a fully configured JCrop widget to the widgetContainer ###
-      @button_wrapper.slideUp()
+      @controls_root.slideUp()
       instance = this  # used to keep a reference to the JCrop API
 
       # Initial cleanup
