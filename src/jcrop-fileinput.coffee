@@ -10,8 +10,13 @@ do ($ = jQuery, window, document) ->
     max_height: 9999,
     max_width: 9999,
     save_callback: undefined,
-    upload_label: "Upload a file",
-    save_label: "Save"
+    labels: {
+      upload: 'Upload an image',
+      change: 'Upload an image',
+      delete: 'Delete image',
+      crop: 'Crop',
+      save: 'Save',
+    }
 
   class JCropFileInput
     constructor: (@element, options) ->
@@ -28,7 +33,7 @@ do ($ = jQuery, window, document) ->
 
       # Get a reference to the wrapping div as the wrap function makes a clone.
       @button_wrapper = $(@element).parent()
-      $upload_button = $("<div>#{@options.upload_label}</div>")
+      $upload_button = $("<div>#{@options.labels.upload}</div>")
       $upload_button.addClass('jcrop-fileinput-fakebutton')
       $upload_button.addClass('jcrop-fileinput-button')
       $(@element).wrap($upload_button)
@@ -128,7 +133,7 @@ do ($ = jQuery, window, document) ->
           the JCrop widget. 
       ###
       $toolbar = $("<div>").addClass("jcrop-fileinput-toolbar")
-      $save_button = $("<button>#{@options.save_label}</button>")
+      $save_button = $("<button>#{@options.labels.save}</button>")
       $save_button.addClass("jcrop-fileinput-button")
       $save_button.on("click", @on_save)
       $toolbar.append($save_button)
