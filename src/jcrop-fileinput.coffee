@@ -45,51 +45,59 @@ do ($ = jQuery, window, document) ->
       $upload_button.addClass('jcrop-fileinput-button')
       $(@element).wrap($upload_button)
 
+      # Initialize crop button
+      $crop_button = $("<button>#{@options.labels.crop}</button>")
+      $crop_button.addClass("jcrop-fileinput-button")
+      $crop_button.addClass("jcrop-fileinput-crop-button")
+      $crop_button.on('click', @on_crop_click)
+      if not @options.show_crop_button
+        $crop_button.hide()
+      $(@element).parent().before($crop_button)
+
+      # Initialize delete button
+      $delete_button = $("<button>#{@options.labels.delete}</button>")
+      $delete_button.addClass("jcrop-fileinput-button")
+      $delete_button.addClass("jcrop-fileinput-delete-button")
+      $delete_button.on('click', @on_delete_click)
+      if not @options.show_delete_button
+        $delete_button.hide()
+      $(@element).parent().after($delete_button)
+
       # Handle initial value of widget
       if $(@element).attr('data-initial')
         initial_image_src = $(@element).attr('data-initial')
         @build_image(initial_image_src, @on_initial_ready)
 
+      # Build the container for JCrop
       @widgetContainer = $("<div>")
       @widgetContainer.addClass("jcrop-fileinput-container")
-      @targetCanvas = document.createElement("canvas")
       @controls_root.after(@widgetContainer)
+
+      # Instanciate the canvas containing the resized image
+      @targetCanvas = document.createElement("canvas")
 
     on_initial_ready: (image) =>
       ### Fires when image in initial value of the input field is read ###
-
-      on_initial_click = (evt) =>
-        evt.preventDefault()
-        @original_image = image
-        @original_width = image.width
-        @original_height = image.height
-        @targetCanvas.width = image.width
-        @targetCanvas.height = image.height
-        @build_jcrop_widget(image.src)
-
+      @original_image = image
+      @original_width = image.width
+      @original_height = image.height
+      @targetCanvas.width = image.width
+      @targetCanvas.height = image.height
       $image = $(image)
       $image.addClass('jcrop-fileinput-thumbnail')
-      $image.on('click', on_initial_click)
-      $(@element).parent().before($image)
+      $image.on('click', @on_crop_click)
+      @controls_root.prepend($image)
       
-      # FIXME, move this, must also be available when image is uploaded
-      if @options.show_crop_button
-        $crop_button = $("<button>#{@options.labels.crop}</button>")
-        $crop_button.addClass("jcrop-fileinput-button")
-        $crop_button.addClass("jcrop-fileinput-crop-button")
-        $crop_button.on('click', on_initial_click)
-        $(@element).parent().before($crop_button)
-
-      if @options.show_delete_button
-        $delete_button = $("<button>#{@options.labels.delete}</button>")
-        $delete_button.addClass("jcrop-fileinput-button")
-        $delete_button.addClass("jcrop-fileinput-delete-button")
-        $delete_button.on('click', @on_delete_click)
-        $(@element).parent().after($delete_button)
+    on_crop_click: (evt) =>
+      evt.preventDefault()
+      @build_jcrop_widget(@original_image.src)
 
     on_delete_click: (evt) =>
+      evt.preventDefault()
+
       # Delete preview
-      #
+      @controls_root.find('.jcrop-fileinput-thumbnail').remove()
+
       # Run callback
       if @options.delete_callback
         @options.delete_callback
