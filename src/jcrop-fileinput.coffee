@@ -76,6 +76,9 @@ do ($ = jQuery, window, document) ->
       if $(@element).attr('data-initial')
         initial_image_src = $(@element).attr('data-initial')
         @build_image(initial_image_src, @on_initial_ready)
+      else
+        $delete_button.hide()
+        $crop_button.hide()
 
       # Build the container for JCrop
       @widgetContainer = $("<div>")
@@ -113,6 +116,8 @@ do ($ = jQuery, window, document) ->
 
       # Delete preview
       @controls_root.find('.jcrop-fileinput-thumbnail').remove()
+      @controls_root.find('.jcrop-fileinput-delete-button').hide()
+      @controls_root.find('.jcrop-fileinput-crop-button').hide()
       @set_status_text(null)
 
       # Run callback
@@ -126,11 +131,13 @@ do ($ = jQuery, window, document) ->
       filename = file.name
       reader = new FileReader()
       reader.onloadend = () =>
+        @controls_root.find('.jcrop-fileinput-delete-button').show()
         if @is_canvas_supported()
+          @controls_root.find('.jcrop-fileinput-crop-button').show()
           @original_filetype = file.type
           @original_image = @build_image(reader.result,
                                           @on_uploaded_image_load)
-          @set_status_text(filename, 
+          @set_status_text(filename,
                            @original_image.width, @original_image.height)
         else if @options.save_callback
           @options.save_callback(reader.result)
