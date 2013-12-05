@@ -13,6 +13,7 @@ do ($ = jQuery, window, document) ->
     delete_callback: undefined,
     show_crop_button: false,
     show_delete_button: false,
+    debug: false,
     labels: {
       upload: 'Upload an image',
       change: 'Upload an image',
@@ -159,10 +160,12 @@ do ($ = jQuery, window, document) ->
       @add_thumbnail(image)
       image_data = image.src
       if @options.scale_width and @options.scale_height
+        # Scale image to scale size
         image_data = @get_resized_image(image,
                                         @options.scale_width,
                                         @options.scale_height)
       else if @options.max_width or @options.max_height
+        # Resizing image to fit max size
         size = @get_max_size(image.width, image.height,
                              @options.max_width, @options.max_height)
         image_data = @get_resized_image(image, size.width, size.height)
@@ -205,6 +208,8 @@ do ($ = jQuery, window, document) ->
       status_bar.text(text)
 
     get_resized_image: (image, width, height) ->
+      ### Resize an image to fixed size ###
+      @debug("Resizing image to #{width}x#{height}")
       canvas_width = width
       canvas_height = height
       canvas = document.createElement("canvas")
@@ -290,6 +295,10 @@ do ($ = jQuery, window, document) ->
         origin_x, origin_y, canvas_width, canvas_height,
         0, 0, canvas_width, canvas_height
       )
+
+    debug: (message) ->
+      if @options['debug']
+        console.log(message)
 
     set_options: (options) ->
       @options = $.extend({}, @options, options)
