@@ -89,7 +89,7 @@ do ($ = jQuery, window, document) ->
       @targetCanvas.width = image.width
       @targetCanvas.height = image.height
 
-      @set_status_text("Current: #{image.src} (#{image.width}x#{image.height}px)")
+      @set_status_text(image.src, image.width, image.height)
       @add_thumbnail(image)
 
     add_thumbnail: (image) ->
@@ -109,21 +109,24 @@ do ($ = jQuery, window, document) ->
 
       # Delete preview
       @controls_root.find('.jcrop-fileinput-thumbnail').remove()
-      @set_status_text('')
+      @set_status_text(null)
 
       # Run callback
       if @options.delete_callback
-        @options.delete_callback
+        @options.delete_callback()
 
     on_fileinput_change: (evt) =>
       file = evt.target.files[0]
-
+      filename = file.name
+      console.log file
       reader = new FileReader()
       reader.onloadend = () =>
         if @is_canvas_supported()
           @original_filetype = file.type
           @original_image = @build_image(reader.result,
                                           @on_uploaded_image_load)
+          @set_status_text(filename, 
+                           @original_image.width, @original_image.height)
         else if @options.save_callback
           @options.save_callback(reader.result)
       reader.readAsDataURL(file)
@@ -193,7 +196,11 @@ do ($ = jQuery, window, document) ->
       $save_button.on("click", @on_save)
       $toolbar.append($save_button)
 
-    set_status_text: (text) ->
+    set_status_text: (filename, width, height) ->
+      if not filename
+        text = ''
+      else
+        text = "#{filename} (#{width}x#{height}px)"
       status_bar = @controls_root.find('.jcrop-fileinput-status')
       status_bar.text(text)
 

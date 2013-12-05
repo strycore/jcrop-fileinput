@@ -76,6 +76,10 @@
         $('#images').append(image_container)
       }
 
+      var delete_image = function () {
+         $('#images').last().remove();
+      }
+
       $(function() {
         $("#fileinput").JCropFileInput({
           preview_height: 150,
@@ -83,6 +87,7 @@
           scale_height: 100,
           scale_width: 100,
           save_callback: show_saved_image,
+          delete_callback: delete_image,
           show_crop_button: true,
           show_delete_button: true,
           ratio: 1
