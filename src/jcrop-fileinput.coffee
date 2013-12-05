@@ -44,7 +44,7 @@ do ($ = jQuery, window, document) ->
       @controls_root = $(@element).parent()
 
       # Wrap the file input inside a fake button, in order to style it nicely.
-      $upload_button = $("<div>#{@options.labels.upload}</div>")
+      $upload_button = $("<button>#{@options.labels.upload}</button>")
       $upload_button.addClass('jcrop-fileinput-fakebutton')
       $upload_button.addClass('jcrop-fileinput-button')
       $(@element).wrap($upload_button)
