@@ -55,6 +55,10 @@
   padding: 7px;
 }
 
+.jcrop-fileinput-invalid {
+  border: 1px solid red;
+}
+
 // Workaround bug in JCrop (https://github.com/tapmodo/Jcrop/issues/36)
 .jcrop-keymgr {
   position: absolute;

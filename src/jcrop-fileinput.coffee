@@ -7,10 +7,13 @@ do ($ = jQuery, window, document) ->
     jcrop_height: 480,
     scale_height: undefined,
     scale_width: undefined,
+    min_width: undefined,
+    min_height: undefined,
     max_height: 9999,
     max_width: 9999,
     save_callback: undefined,
     delete_callback: undefined,
+    invalid_callback: undefined,
     show_crop_button: false,
     show_delete_button: false,
     debug: false,
@@ -118,8 +121,9 @@ do ($ = jQuery, window, document) ->
 
     on_fileinput_change: (evt) =>
       file = evt.target.files[0]
+      if not file
+        @debug("No file given")
       filename = file.name
-      console.log file
       reader = new FileReader()
       reader.onloadend = () =>
         if @is_canvas_supported()
@@ -157,18 +161,30 @@ do ($ = jQuery, window, document) ->
       @build_image(image_data, @on_image_ready)
 
     on_image_ready: (image) =>
+      ### Processes the cropped image ###
       @add_thumbnail(image)
       image_data = image.src
       if @options.scale_width and @options.scale_height
         # Scale image to scale size
-        image_data = @get_resized_image(image,
-                                        @options.scale_width,
-                                        @options.scale_height)
+        width = @options.scale_width
+        height = @options.scale_height
       else if @options.max_width or @options.max_height
         # Resizing image to fit max size
         size = @get_max_size(image.width, image.height,
                              @options.max_width, @options.max_height)
-        image_data = @get_resized_image(image, size.width, size.height)
+        width = size.width
+        height = size.height
+      else
+        width = image.width
+        height = image.height
+      image_data = @get_resized_image(image, width, height)
+      if width < @options.min_width or height < @options.min_height
+        @controls_root.addClass("jcrop-fileinput-invalid")
+        if @options.invalid_callback
+          @options.invalid_callback()
+      else
+        @controls_root.removeClass("jcrop-fileinput-invalid")
+
       if @options.save_callback
         @options.save_callback(image_data)
 

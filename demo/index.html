@@ -80,14 +80,21 @@
          $('#images').last().remove();
       }
 
+      var on_invalid_image = function () {
+        alert("The image is too small!");
+      }
+
       $(function() {
         $("#fileinput").JCropFileInput({
           preview_height: 150,
           preview_width: 150,
-          scale_height: 100,
-          scale_width: 100,
+          max_height: 100,
+          max_width: 100,
+          min_height: 100,
+          min_width: 100,
           save_callback: show_saved_image,
           delete_callback: delete_image,
+          invalid_callback: on_invalid_image,
           show_crop_button: true,
           show_delete_button: true,
           ratio: 1,
