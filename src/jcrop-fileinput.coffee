@@ -31,7 +31,7 @@ do ($ = jQuery, window, document) ->
     init: ->
       # Connect file input to signal
       $(@element).on("change", @on_fileinput_change)
-      
+
       # Wrap file input in root element
       _controls_root = document.createElement("div")
       _controls_root.className = "jcrop-fileinput-wrapper"
@@ -90,11 +90,16 @@ do ($ = jQuery, window, document) ->
       @targetCanvas.height = image.height
 
       @set_status_text("Current: #{image.src} (#{image.width}x#{image.height}px)")
+      @add_thumbnail(image)
+
+    add_thumbnail: (image) ->
+      ### Adds the HTML img tag 'image' to the controls, binds click event ###
+      @controls_root.find('.jcrop-fileinput-thumbnail').remove()
       $image = $(image)
       $image.addClass('jcrop-fileinput-thumbnail')
       $image.on('click', @on_crop_click)
       @controls_root.prepend($image)
-      
+
     on_crop_click: (evt) =>
       evt.preventDefault()
       @build_jcrop_widget(@original_image.src)
@@ -148,6 +153,7 @@ do ($ = jQuery, window, document) ->
       @build_image(image_data, @on_image_ready)
 
     on_image_ready: (image) =>
+      @add_thumbnail(image)
       image_data = image.src
       if @options.scale_width and @options.scale_height
         image_data = @get_resized_image(image,
@@ -179,14 +185,14 @@ do ($ = jQuery, window, document) ->
 
     build_toolbar: () ->
       ### Return a toolbar jQuery element containing actions applyable to
-          the JCrop widget. 
+          the JCrop widget.
       ###
       $toolbar = $("<div>").addClass("jcrop-fileinput-toolbar")
       $save_button = $("<button>#{@options.labels.save}</button>")
       $save_button.addClass("jcrop-fileinput-button")
       $save_button.on("click", @on_save)
       $toolbar.append($save_button)
-    
+
     set_status_text: (text) ->
       status_bar = @controls_root.find('.jcrop-fileinput-status')
       status_bar.text(text)
