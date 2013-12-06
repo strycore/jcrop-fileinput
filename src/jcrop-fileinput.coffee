@@ -36,12 +36,18 @@ do ($ = jQuery, window, document) ->
       # Connect file input to signal
       $(@element).on("change", @on_fileinput_change)
 
+      # Wrap file input in buttons container
+      _buttons_wrap = document.createElement("div")
+      _buttons_wrap.className = "jcrop-fileinput-actions"
+      $(@element).wrap(_buttons_wrap)
+      @buttons = $(@element).parent()
+
       # Wrap file input in root element
       _controls_root = document.createElement("div")
       _controls_root.className = "jcrop-fileinput-wrapper"
-      $(@element).wrap(_controls_root)
+      $(@buttons).wrap(_controls_root)
       # Get a reference to the wrapping div as the wrap function makes a clone.
-      @controls_root = $(@element).parent()
+      @controls_root = $(@buttons).parent()
 
       # Wrap the file input inside a fake button, in order to style it nicely.
       $upload_button = $("<button>#{@options.labels.upload}</button>")
@@ -56,7 +62,7 @@ do ($ = jQuery, window, document) ->
       $crop_button.on('click', @on_crop_click)
       if not @options.show_crop_button
         $crop_button.hide()
-      $(@element).parent().before($crop_button)
+      $(@buttons).prepend($crop_button)
 
       # Initialize delete button
       $delete_button = $("<button>#{@options.labels.delete}</button>")
@@ -65,7 +71,7 @@ do ($ = jQuery, window, document) ->
       $delete_button.on('click', @on_delete_click)
       if not @options.show_delete_button
         $delete_button.hide()
-      $(@element).parent().after($delete_button)
+      $(@buttons).append($delete_button)
 
       # Initialize status bar
       $status = $("<div></div>")
