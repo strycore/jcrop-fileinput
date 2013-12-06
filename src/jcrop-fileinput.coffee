@@ -40,13 +40,13 @@ do ($ = jQuery, window, document) ->
       _buttons_wrap = document.createElement("div")
       _buttons_wrap.className = "jcrop-fileinput-actions"
       $(@element).wrap(_buttons_wrap)
+      # Get a reference to the wrapping div as the wrap function makes a clone.
       @buttons = $(@element).parent()
 
       # Wrap file input in root element
       _controls_root = document.createElement("div")
       _controls_root.className = "jcrop-fileinput-wrapper"
       $(@buttons).wrap(_controls_root)
-      # Get a reference to the wrapping div as the wrap function makes a clone.
       @controls_root = $(@buttons).parent()
 
       # Wrap the file input inside a fake button, in order to style it nicely.
@@ -108,10 +108,13 @@ do ($ = jQuery, window, document) ->
     add_thumbnail: (image) ->
       ### Adds the HTML img tag 'image' to the controls, binds click event ###
       @controls_root.find('.jcrop-fileinput-thumbnail').remove()
+      image_container = document.createElement('div')
+      image_container.className = 'jcrop-fileinput-thumbnail'
       $image = $(image)
-      $image.addClass('jcrop-fileinput-thumbnail')
       $image.on('click', @on_crop_click)
-      @controls_root.prepend($image)
+      $image.wrap(image_container)
+      $image_container = $image.parent()
+      @controls_root.prepend($image_container)
 
     on_crop_click: (evt) =>
       evt.preventDefault()
