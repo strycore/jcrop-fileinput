@@ -108,9 +108,12 @@ do ($ = jQuery, window, document) ->
     add_thumbnail: (image) ->
       ### Adds the HTML img tag 'image' to the controls, binds click event ###
       @controls_root.find('.jcrop-fileinput-thumbnail').remove()
+      thumb_size = @get_max_size(image.width, image.height, 50, 50)
+      thumbnail = @get_resized_image(image, thumb_size.width, thumb_size.height)
       image_container = document.createElement('div')
       image_container.className = 'jcrop-fileinput-thumbnail'
-      $image = $(image)
+      $image = $("<img>")
+      $image.prop('src', thumbnail)
       $image.on('click', @on_crop_click)
       $image.wrap(image_container)
       $image_container = $image.parent()
