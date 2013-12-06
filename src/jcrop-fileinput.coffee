@@ -255,6 +255,8 @@ do ($ = jQuery, window, document) ->
       status_bar.empty()
       if not filename_text
         return
+      filename_parts = filename_text.split("/")
+      filename_text = filename_parts[filename_parts.length - 1]
       filename = $("<span>").addClass('jcrop-fileinput-filename').text(filename_text)
       filename.prop('title', filename_text)
       size_text = "(#{width}x#{height}px)"
