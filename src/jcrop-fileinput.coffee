@@ -109,7 +109,7 @@ do ($ = jQuery, window, document) ->
 
     on_crop_click: (evt) =>
       evt.preventDefault()
-      @build_jcrop_widget(@original_image.src)
+      @build_jcrop_widget(@original_image)
 
     on_delete_click: (evt) =>
       evt.preventDefault()
@@ -156,7 +156,7 @@ do ($ = jQuery, window, document) ->
     on_uploaded_image_load: (image) =>
       @original_width = image.width
       @original_height = image.height
-      @resize_image(image)
+      @build_jcrop_widget(image)
 
     on_save: (evt) =>
       ### Signal triggered when the save button is pressed ###
@@ -232,6 +232,9 @@ do ($ = jQuery, window, document) ->
 
     get_resized_image: (image, width, height) ->
       ### Resize an image to fixed size ###
+      if not width or not height
+        @debug("Missing image dimensions")
+        return
       @debug("Resizing image to #{width}x#{height}")
       canvas_width = width
       canvas_height = height
@@ -241,12 +244,6 @@ do ($ = jQuery, window, document) ->
       ctx = canvas.getContext("2d")
       ctx.drawImage(image, 0, 0, width, height)
       canvas.toDataURL(@original_filetype)
-
-    resize_image: (image) ->
-      size = @get_max_size(image.width, image.height,
-                           @options.jcrop_width, @options.jcrop_height)
-      canvas_image_data = @get_resized_image(image, size.width, size.height)
-      @build_jcrop_widget(canvas_image_data)
 
     get_max_size: (width, height, max_width, max_height) ->
       newWidth = width
@@ -262,8 +259,12 @@ do ($ = jQuery, window, document) ->
           newHeight = max_height
       return {width: newWidth, height: newHeight}
 
-    build_jcrop_widget: (data) ->
+    build_jcrop_widget: (image) ->
       ### Adds a fully configured JCrop widget to the widgetContainer ###
+      @debug("initalizing jcrop ")
+      size = @get_max_size(image.width, image.height,
+                           @options.jcrop_width, @options.jcrop_height)
+      data = @get_resized_image(image, size.width, size.height)
       @controls_root.slideUp()
       instance = this  # used to keep a reference to the JCrop API
 
