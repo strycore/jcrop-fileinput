@@ -72,6 +72,10 @@
   padding-right: 15px;
 }
 
+.jcrop-fileinput-has-file {
+  background-color: #EEF;
+}
+
 // Workaround bug in JCrop (https://github.com/tapmodo/Jcrop/issues/36)
 .jcrop-keymgr {
   position: absolute;
