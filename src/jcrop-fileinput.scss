@@ -63,6 +63,15 @@
   border: 1px solid red;
 }
 
+.jcrop-fileinput-filename {
+  display: inline-block;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  max-width: 250px;
+  overflow: hidden;
+  padding-right: 15px;
+}
+
 // Workaround bug in JCrop (https://github.com/tapmodo/Jcrop/issues/36)
 .jcrop-keymgr {
   position: absolute;

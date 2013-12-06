@@ -76,7 +76,7 @@ do ($ = jQuery, window, document) ->
       # Initialize status bar
       $status = $("<div></div>")
       $status.addClass("jcrop-fileinput-status")
-      @controls_root.append($status)
+      @controls_root.prepend($status)
 
       # Handle initial value of widget
       if $(@element).attr('data-initial')
@@ -234,13 +234,17 @@ do ($ = jQuery, window, document) ->
       $save_button.on("click", @on_save)
       $toolbar.append($save_button)
 
-    set_status_text: (filename, width, height) ->
-      if not filename
-        text = ''
-      else
-        text = "#{filename} (#{width}x#{height}px)"
+    set_status_text: (filename_text, width, height) ->
       status_bar = @controls_root.find('.jcrop-fileinput-status')
-      status_bar.text(text)
+      status_bar.empty()
+      if not filename_text
+        return
+      filename = $("<span>").addClass('jcrop-fileinput-filename').text(filename_text)
+      filename.prop('title', filename_text)
+      size_text = "(#{width}x#{height}px)"
+      size = $("<span>").addClass('jcrop-fileinput-size').text(size_text)
+      status_bar.append(filename)
+      status_bar.append(size)
 
     get_resized_image: (image, width, height) ->
       ### Resize an image to fixed size ###
