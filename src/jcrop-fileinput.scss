@@ -1,4 +1,6 @@
 .jcrop-fileinput-button {
+  position: relative;
+  display: inline-block;
   background-color: #0030AF;
   border: none;
   color: #EEE;
@@ -8,14 +10,16 @@
   margin: 0 10px 0 0;
 }
 
+
 .jcrop-fileinput-fakebutton {
   border-radius: 2px;
-  position: relative;
   overflow: hidden;
   z-index: 2;
-  display: inline-block;
+  display: inline;
+  padding: 10px 17px 8px;
   input[type=file] {
     font-size: 40px;
+    outline: 1px solid green;
     height: 100px;
     position: absolute;
     right: 0;

@@ -53,7 +53,7 @@ do ($ = jQuery, window, document) ->
       $upload_label = $("<span></span>")
       $upload_label.addClass('jcrop-fileinput-upload-label')
       $upload_label.text(@options.labels.upload)
-      $upload_button = $("<button></button>")
+      $upload_button = $("<span></span>")
       $upload_button.addClass('jcrop-fileinput-fakebutton')
       $upload_button.addClass('jcrop-fileinput-button')
       $(@element).wrap($upload_button)
