@@ -1,0 +1,75 @@
+.jcrop-fileinput-button {
+  position: relative;
+  display: inline-block;
+  background-color: #0030AF;
+  border: none;
+  color: #EEE;
+  padding: 7px 14px;
+  border-radius: 2px;
+  font-size: 0.8em;
+  margin: 0 10px 0 0; }
+
+.jcrop-fileinput-fakebutton {
+  border-radius: 2px;
+  overflow: hidden;
+  z-index: 2;
+  display: inline;
+  padding: 10px 17px 8px; }
+  .jcrop-fileinput-fakebutton input[type=file] {
+    font-size: 40px;
+    outline: 1px solid green;
+    height: 100px;
+    position: absolute;
+    right: 0;
+    top: 0;
+    opacity: 0;
+    filter: alpha(opacity=0);
+    cursor: pointer;
+    z-index: 0; }
+
+.jcrop-fileinput-toolbar {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid #DEDEDE;
+  text-align: right; }
+
+.jcrop-fileinput-container {
+  display: none; }
+
+.jcrop-fileinput-thumbnail {
+  width: 50px;
+  height: 50px;
+  padding: 5px;
+  border-radius: 2px;
+  border: 1px solid #DEDEDE;
+  vertical-align: top;
+  margin-right: 10px;
+  float: left; }
+  .jcrop-fileinput-thumbnail img {
+    max-width: 50px;
+    max-height: 50px; }
+
+.jcrop-fileinput-status {
+  color: #999;
+  font-size: 0.85em;
+  padding: 7px; }
+
+.jcrop-fileinput-invalid {
+  border: 1px solid red; }
+
+.jcrop-fileinput-filename {
+  display: inline-block;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  max-width: 250px;
+  overflow: hidden;
+  padding-right: 15px; }
+
+.jcrop-fileinput-has-file {
+  background-color: #EEF; }
+
+.jcrop-keymgr {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  opacity: 0; }
