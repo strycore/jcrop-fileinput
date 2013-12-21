@@ -3,7 +3,8 @@
   "version": "0.0.1",
   "dependencies": {
     "jquery": "~1.10.2",
-    "jcrop": "~0.9.12"
+    "jcrop": "~0.9.12",
+    "blueimp-canvas-to-blob": "~2.1.0"
   },
   "devDependencies": {}
 }
