@@ -33,11 +33,18 @@ do ($ = jQuery, window, document) ->
       @init()
 
     init: ->
+      
+      @blob = new Blob()
+
       # Attach the plugin instance to the element
       @element.JCropFileInput = @
 
       # Connect file input to signal
       $(@element).on("change", @on_fileinput_change)
+
+      # Override form submit if no callback has been provided
+      if not @options.save_callback
+        @override_form_submit()
 
       # Wrap file input in buttons container
       _buttons_wrap = document.createElement("div")
@@ -154,8 +161,10 @@ do ($ = jQuery, window, document) ->
                                           @on_uploaded_image_load)
           @set_status_text(filename,
                            @original_image.width, @original_image.height)
+        # Fallback when canvas not available: call callback with original image
         else if @options.save_callback
           @options.save_callback(reader.result)
+
       reader.readAsDataURL(file)
 
       # Reset the input field by replacing it with a clone
@@ -356,6 +365,38 @@ do ($ = jQuery, window, document) ->
         origin_x, origin_y, canvas_width, canvas_height,
         0, 0, canvas_width, canvas_height
       )
+
+    override_form_submit: () ->
+      form = $(@element).closest('form').get(0)
+      if not form
+        return
+      $(form).on 'submit', (evt) =>
+        evt.preventDefault()
+        form_data = new FormData()
+        console.log(form)
+        for i in [0..form.length]
+          field = form[i]
+          if not field
+            continue
+          field_name = field.name
+          if not field_name
+            continue
+
+          jcrop_instance = field.JCropFileInput
+          if not jcrop_instance
+            value = field.value
+            form_data.append(field_name, value)
+
+        form_data.append('image', @blob, "image.png")
+        request = new XMLHttpRequest()
+        action_url = form.action or "."
+        request.open("POST", action_url)
+        request.send(form_data)
+        request.onload = (oEvent) ->
+          # Not the ideal way, but currently the only way
+          document.open()
+          document.write(request.responseText)
+          document.close()
 
     debug: (message) ->
       if @options['debug']
