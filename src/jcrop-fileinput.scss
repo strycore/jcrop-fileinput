@@ -15,12 +15,13 @@
   border-radius: 2px;
   overflow: hidden;
   z-index: 2;
-  display: inline;
+  display: inline-block;
+  vertical-align: bottom;
   padding: 10px 17px 8px;
   input[type=file] {
-    font-size: 40px;
+    font-size: 30px;
     outline: 1px solid green;
-    height: 100px;
+    height: 60px;
     position: absolute;
     right: 0;
     top: 0;
