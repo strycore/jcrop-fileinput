@@ -33,6 +33,9 @@ do ($ = jQuery, window, document) ->
       @init()
 
     init: ->
+      # Attach the plugin instance to the element
+      @element.JCropFileInput = @
+
       # Connect file input to signal
       $(@element).on("change", @on_fileinput_change)
 
