@@ -4,7 +4,7 @@
   "description": "An image upload widget with client-side cropping features.",
   "author": "Mathieu Comandon",
   "homepage": "https://github.com/strycore/jcrop-fileinput",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "devDependencies": {
     "grunt": "~0.4.1",
     "grunt-cli": "~0.1.7",
