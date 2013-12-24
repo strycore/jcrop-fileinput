@@ -32,6 +32,7 @@
       function JCropFileInput(element, options) {
         this.element = element;
         this.on_jcrop_select = __bind(this.on_jcrop_select, this);
+        this.set_blob = __bind(this.set_blob, this);
         this.on_image_ready = __bind(this.on_image_ready, this);
         this.on_save = __bind(this.on_save, this);
         this.on_uploaded_image_load = __bind(this.on_uploaded_image_load, this);
@@ -47,7 +48,12 @@
 
       JCropFileInput.prototype.init = function() {
         var $crop_button, $delete_button, $status, $upload_button, $upload_label, initial_image_src, _buttons_wrap, _controls_root;
+        this.blob = new Blob();
+        this.element.JCropFileInput = this;
         $(this.element).on("change", this.on_fileinput_change);
+        if (!this.options.save_callback) {
+          this.override_form_submit();
+        }
         _buttons_wrap = document.createElement("div");
         _buttons_wrap.className = "jcrop-fileinput-actions";
         $(this.element).wrap(_buttons_wrap);
@@ -207,6 +213,7 @@
         } else {
           this.controls_root.removeClass("jcrop-fileinput-invalid");
         }
+        this.targetCanvas.toBlob(this.set_blob);
         if (this.options.save_callback) {
           return this.options.save_callback(image_data);
         }
@@ -251,6 +258,10 @@
           }
         };
         return image;
+      };
+
+      JCropFileInput.prototype.set_blob = function(blob) {
+        return this.blob = blob;
       };
 
       JCropFileInput.prototype.build_toolbar = function() {
@@ -381,6 +392,46 @@
         canvas.height = canvas_height;
         ctx = canvas.getContext("2d");
         return ctx.drawImage(this.original_image, origin_x, origin_y, canvas_width, canvas_height, 0, 0, canvas_width, canvas_height);
+      };
+
+      JCropFileInput.prototype.override_form_submit = function() {
+        var form,
+          _this = this;
+        form = $(this.element).closest('form').get(0);
+        if (!form) {
+          return;
+        }
+        return $(form).on('submit', function(evt) {
+          var action_url, field, field_name, form_data, i, jcrop_instance, request, value, _i, _ref;
+          evt.preventDefault();
+          form_data = new FormData();
+          console.log(form);
+          for (i = _i = 0, _ref = form.length; 0 <= _ref ? _i <= _ref : _i >= _ref; i = 0 <= _ref ? ++_i : --_i) {
+            field = form[i];
+            if (!field) {
+              continue;
+            }
+            field_name = field.name;
+            if (!field_name) {
+              continue;
+            }
+            jcrop_instance = field.JCropFileInput;
+            if (!jcrop_instance) {
+              value = field.value;
+              form_data.append(field_name, value);
+            }
+          }
+          form_data.append('image', _this.blob, "image.png");
+          request = new XMLHttpRequest();
+          action_url = form.action || ".";
+          request.open("POST", action_url);
+          request.send(form_data);
+          return request.onload = function(oEvent) {
+            document.open();
+            document.write(request.responseText);
+            return document.close();
+          };
+        });
       };
 
       JCropFileInput.prototype.debug = function(message) {

@@ -33,7 +33,7 @@ do ($ = jQuery, window, document) ->
       @init()
 
     init: ->
-      
+
       @blob = new Blob()
 
       # Attach the plugin instance to the element
@@ -217,6 +217,7 @@ do ($ = jQuery, window, document) ->
       else
         @controls_root.removeClass("jcrop-fileinput-invalid")
 
+      @targetCanvas.toBlob(@set_blob)
       if @options.save_callback
         @options.save_callback(image_data)
 
@@ -251,6 +252,10 @@ do ($ = jQuery, window, document) ->
         if callback
           callback(image)
       return image
+
+    set_blob: (blob) =>
+      @blob = blob
+      #console.log("Set blob to ", blob) 
 
     build_toolbar: () ->
       ### Return a toolbar jQuery element containing actions applyable to
