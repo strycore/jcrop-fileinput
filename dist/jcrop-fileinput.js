@@ -421,7 +421,7 @@
               form_data.append(field_name, value);
             }
           }
-          form_data.append('image', _this.blob, "image.png");
+          form_data.append(_this.element.name, _this.blob, "image.png");
           request = new XMLHttpRequest();
           action_url = form.action || ".";
           request.open("POST", action_url);
