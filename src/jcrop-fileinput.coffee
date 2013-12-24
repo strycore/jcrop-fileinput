@@ -255,7 +255,7 @@ do ($ = jQuery, window, document) ->
 
     set_blob: (blob) =>
       @blob = blob
-      #console.log("Set blob to ", blob) 
+      #console.log("Set blob to ", blob)
 
     build_toolbar: () ->
       ### Return a toolbar jQuery element containing actions applyable to
@@ -392,7 +392,7 @@ do ($ = jQuery, window, document) ->
             value = field.value
             form_data.append(field_name, value)
 
-        form_data.append('image', @blob, "image.png")
+        form_data.append(@element.name, @blob, "image.png")
         request = new XMLHttpRequest()
         action_url = form.action or "."
         request.open("POST", action_url)
