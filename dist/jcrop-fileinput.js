@@ -48,7 +48,11 @@
 
       JCropFileInput.prototype.init = function() {
         var $crop_button, $delete_button, $status, $upload_button, $upload_label, initial_image_src, _buttons_wrap, _controls_root;
-        this.blob = new Blob();
+        if (window.Blob) {
+          this.blob = new Blob();
+        } else {
+          this.blob = null;
+        }
         this.element.JCropFileInput = this;
         $(this.element).on("change", this.on_fileinput_change);
         if (!this.options.save_callback) {

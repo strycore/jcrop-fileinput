@@ -33,8 +33,10 @@ do ($ = jQuery, window, document) ->
       @init()
 
     init: ->
-
-      @blob = new Blob()
+      if window.Blob
+        @blob = new Blob()
+      else
+        @blob = null
 
       # Attach the plugin instance to the element
       @element.JCropFileInput = @
