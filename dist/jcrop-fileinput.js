@@ -384,10 +384,10 @@
           factor = 1;
         }
         canvas = this.targetCanvas;
-        origin_x = coords.x * factor;
-        origin_y = coords.y * factor;
-        canvas_width = coords.w * factor;
-        canvas_height = coords.h * factor;
+        origin_x = Math.max(coords.x * factor, 0);
+        origin_y = Math.max(coords.y * factor, 0);
+        canvas_width = parseInt(coords.w * factor);
+        canvas_height = parseInt(coords.h * factor);
         canvas.width = canvas_width;
         canvas.height = canvas_height;
         ctx = canvas.getContext("2d");
