@@ -278,7 +278,7 @@ do ($ = jQuery, window, document) ->
       filename_text = filename_parts[filename_parts.length - 1]
       filename = $("<span>").addClass('jcrop-fileinput-filename').text(filename_text)
       filename.prop('title', filename_text)
-      size_text = "(#{width}x#{height}px)"
+      size_text = "(#{width} x #{height} px)"
       size = $("<span>").addClass('jcrop-fileinput-size').text(size_text)
       status_bar.append(filename)
       status_bar.append(size)
