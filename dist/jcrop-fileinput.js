@@ -14,6 +14,8 @@
       min_height: void 0,
       max_height: 9999,
       max_width: 9999,
+      thumb_max_width: 50,
+      thumb_max_height: 50,
       save_callback: void 0,
       delete_callback: void 0,
       invalid_callback: void 0,
@@ -123,7 +125,7 @@
 
         var $image, $image_container, image_container, thumb_size, thumbnail;
         this.controls_root.find('.jcrop-fileinput-thumbnail').remove();
-        thumb_size = this.get_max_size(image.width, image.height, 50, 50);
+        thumb_size = this.get_max_size(image.width, image.height, this.options.thumb_max_width, this.options.thumb_max_height);
         thumbnail = this.get_resized_image(image, thumb_size.width, thumb_size.height);
         image_container = document.createElement('div');
         image_container.className = 'jcrop-fileinput-thumbnail';
@@ -292,7 +294,7 @@
         filename_text = filename_parts[filename_parts.length - 1];
         filename = $("<span>").addClass('jcrop-fileinput-filename').text(filename_text);
         filename.prop('title', filename_text);
-        size_text = "(" + width + "x" + height + "px)";
+        size_text = "(" + width + " x " + height + " px)";
         size = $("<span>").addClass('jcrop-fileinput-size').text(size_text);
         status_bar.append(filename);
         return status_bar.append(size);
