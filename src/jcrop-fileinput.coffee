@@ -11,6 +11,8 @@ do ($ = jQuery, window, document) ->
     min_height: undefined,
     max_height: 9999,
     max_width: 9999,
+    thumb_max_width: 50,
+    thumb_max_height: 50,
     save_callback: undefined,
     delete_callback: undefined,
     invalid_callback: undefined,
@@ -124,7 +126,7 @@ do ($ = jQuery, window, document) ->
     add_thumbnail: (image) ->
       ### Adds the HTML img tag 'image' to the controls, binds click event ###
       @controls_root.find('.jcrop-fileinput-thumbnail').remove()
-      thumb_size = @get_max_size(image.width, image.height, 50, 50)
+      thumb_size = @get_max_size(image.width, image.height, @options.thumb_max_width, @options.thumb_max_height)
       thumbnail = @get_resized_image(image, thumb_size.width, thumb_size.height)
       image_container = document.createElement('div')
       image_container.className = 'jcrop-fileinput-thumbnail'
