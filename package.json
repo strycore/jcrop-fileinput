@@ -5,6 +5,13 @@
   "author": "Mathieu Comandon",
   "homepage": "https://github.com/strycore/jcrop-fileinput",
   "version": "0.1.1",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/strycore/jcrop-fileinput.git"
+  },
+  "licenses": {
+    "type": "MIT"
+  },
   "devDependencies": {
     "grunt": "~0.4.1",
     "grunt-cli": "~0.1.7",
