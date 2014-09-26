@@ -1,6 +1,6 @@
 {
   "name": "jcrop-fileinput",
-  "version": "0.0.1",
+  "version": "0.1.2",
   "dependencies": {
     "jquery": "~1.10.2",
     "jcrop": "~0.9.12",
