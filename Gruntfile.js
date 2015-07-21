@@ -18,16 +18,13 @@ module.exports = function(grunt) {
     },
 
     // Lint definitions
-    jshint: {
-      files: ["src/jcrop-fileinput.js"],
-      options: {
-        jshintrc: ".jshintrc"
-      }
+    coffeelint: {
+      app: ["src/jcrop-fileinput.coffee"]
     },
 
     // Minify definitions
     uglify: {
-      my_target: {
+      myTarget: {
         src: ["dist/jcrop-fileinput.js"],
         dest: "dist/jcrop-fileinput.min.js"
       },
@@ -100,12 +97,12 @@ module.exports = function(grunt) {
 
   });
 
-  grunt.loadNpmTasks("grunt-contrib-jshint");
+  grunt.loadNpmTasks("grunt-coffeelint");
   grunt.loadNpmTasks("grunt-contrib-uglify");
   grunt.loadNpmTasks("grunt-contrib-coffee");
   grunt.loadNpmTasks("grunt-contrib-sass");
   grunt.loadNpmTasks("grunt-contrib-watch");
   grunt.loadNpmTasks('grunt-browser-sync');
-  grunt.registerTask("default", ["jshint", "coffee", "sass", "uglify"]);
+  grunt.registerTask("default", ["coffeelint", "coffee", "sass", "uglify"]);
   grunt.registerTask("server", ["browserSync", "watch"]);
 };
