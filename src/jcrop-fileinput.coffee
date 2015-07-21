@@ -204,12 +204,14 @@ do ($ = jQuery, window, document) ->
         # Scale image to scale size
         width = @options.scale_width
         height = @options.scale_height
+        @debug("Scale image to #{width}x#{height}")
       else if @options.max_width or @options.max_height
         # Resizing image to fit max size
         size = @get_max_size(image.width, image.height,
                              @options.max_width, @options.max_height)
         width = size.width
         height = size.height
+        @debug("Resized image to #{width}x#{height}")
       else
         width = image.width
         height = image.height
@@ -217,7 +219,7 @@ do ($ = jQuery, window, document) ->
       if width < @options.min_width or height < @options.min_height
         @controls_root.addClass("jcrop-fileinput-invalid")
         if @options.invalid_callback
-          @options.invalid_callback()
+          @options.invalid_callback(width, height)
       else
         @controls_root.removeClass("jcrop-fileinput-invalid")
 

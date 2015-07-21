@@ -202,10 +202,12 @@
         if (this.options.scale_width && this.options.scale_height) {
           width = this.options.scale_width;
           height = this.options.scale_height;
+          this.debug("Scale image to " + width + "x" + height);
         } else if (this.options.max_width || this.options.max_height) {
           size = this.get_max_size(image.width, image.height, this.options.max_width, this.options.max_height);
           width = size.width;
           height = size.height;
+          this.debug("Resized image to " + width + "x" + height);
         } else {
           width = image.width;
           height = image.height;
@@ -214,7 +216,7 @@
         if (width < this.options.min_width || height < this.options.min_height) {
           this.controls_root.addClass("jcrop-fileinput-invalid");
           if (this.options.invalid_callback) {
-            this.options.invalid_callback();
+            this.options.invalid_callback(width, height);
           }
         } else {
           this.controls_root.removeClass("jcrop-fileinput-invalid");
