@@ -2,7 +2,7 @@
   "name": "jcrop-fileinput",
   "version": "0.1.2",
   "dependencies": {
-    "jquery": "~1.10.2",
+    "jquery": "~1.11.3",
     "jcrop": "~0.9.12",
     "blueimp-canvas-to-blob": "~2.1.0"
   },
