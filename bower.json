@@ -12,6 +12,10 @@
     "test",
     "tests"
   ],
+  "main": [
+    "src/jcrop-fileinput.coffee",
+    "src/jcrop-fileinput.scss"
+  ],
   "dependencies": {
     "jquery": "~1.11.3",
     "jcrop": "~2.0.0",
