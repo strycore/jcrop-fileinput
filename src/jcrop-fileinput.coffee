@@ -405,8 +405,8 @@ do ($ = jQuery, window, document) ->
           if not field_name
             continue
 
-          jcrop_instance = field.JCropFileInput
-          if not jcrop_instance
+          jcropInstance = field.JCropFileInput
+          if not jcropInstance
             value = field.value
             form_data.append(field_name, value)
 
