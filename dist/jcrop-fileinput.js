@@ -6,21 +6,21 @@
     pluginName = "JCropFileInput";
     defaults = {
       ratio: void 0,
-      jcrop_width: 640,
-      jcrop_height: 480,
-      scale_height: void 0,
-      scale_width: void 0,
-      min_width: void 0,
-      min_height: void 0,
-      max_height: 9999,
-      max_width: 9999,
-      thumb_max_width: 50,
-      thumb_max_height: 50,
-      save_callback: void 0,
-      delete_callback: void 0,
-      invalid_callback: void 0,
-      show_crop_button: false,
-      show_delete_button: false,
+      jcropWidth: 640,
+      jcropHeight: 480,
+      scaleHeight: void 0,
+      scaleWidth: void 0,
+      minWidth: void 0,
+      minHeight: void 0,
+      maxHeight: 9999,
+      maxWidth: 9999,
+      thumbMaxWidth: 50,
+      thumbMaxHeight: 50,
+      saveCallback: void 0,
+      deleteCallback: void 0,
+      invalidCallback: void 0,
+      showCropButton: false,
+      showDeleteButton: false,
       debug: false,
       labels: {
         upload: "Upload an image",
@@ -33,124 +33,124 @@
     JCropFileInput = (function() {
       function JCropFileInput(element, options) {
         this.element = element;
-        this.on_jcrop_select = bind(this.on_jcrop_select, this);
-        this.set_blob = bind(this.set_blob, this);
-        this.on_image_ready = bind(this.on_image_ready, this);
-        this.on_save = bind(this.on_save, this);
-        this.on_uploaded_image_load = bind(this.on_uploaded_image_load, this);
-        this.on_fileinput_change = bind(this.on_fileinput_change, this);
-        this.on_delete_click = bind(this.on_delete_click, this);
-        this.on_crop_click = bind(this.on_crop_click, this);
-        this.on_initial_ready = bind(this.on_initial_ready, this);
+        this.onJcropSelect = bind(this.onJcropSelect, this);
+        this.setBlob = bind(this.setBlob, this);
+        this.onImageReady = bind(this.onImageReady, this);
+        this.onSave = bind(this.onSave, this);
+        this.onUploadedImageLoad = bind(this.onUploadedImageLoad, this);
+        this.onFileinputChange = bind(this.onFileinputChange, this);
+        this.onDeleteClick = bind(this.onDeleteClick, this);
+        this.onCropClick = bind(this.onCropClick, this);
+        this.onInitialReady = bind(this.onInitialReady, this);
         this.options = $.extend({}, defaults, options);
-        this._defaults = defaults;
-        this._name = pluginName;
+        this.defaults = defaults;
+        this.name = pluginName;
         this.init();
       }
 
       JCropFileInput.prototype.init = function() {
-        var $crop_button, $delete_button, $status, $upload_button, $upload_label, _buttons_wrap, _controls_root, initial_image_src;
+        var $cropButton, $deleteButton, $status, $uploadButton, $uploadLabel, buttonsWrap, controlsRootWrap, initialImageSrc;
         if (window.Blob) {
           this.blob = new Blob();
         } else {
           this.blob = null;
         }
         this.element.JCropFileInput = this;
-        $(this.element).on("change", this.on_fileinput_change);
-        if (!this.options.save_callback) {
-          this.override_form_submit();
+        $(this.element).on("change", this.onFileinputChange);
+        if (!this.options.saveCallback) {
+          this.overrideFormSubmit();
         }
-        _buttons_wrap = document.createElement("div");
-        _buttons_wrap.className = "jcrop-fileinput-actions";
-        $(this.element).wrap(_buttons_wrap);
+        buttonsWrap = document.createElement("div");
+        buttonsWrap.className = "jcrop-fileinput-actions";
+        $(this.element).wrap(buttonsWrap);
         this.buttons = $(this.element).parent();
-        _controls_root = document.createElement("div");
-        _controls_root.className = "jcrop-fileinput-wrapper";
-        $(this.buttons).wrap(_controls_root);
-        this.controls_root = $(this.buttons).parent();
-        $upload_label = $("<span></span>");
-        $upload_label.addClass("jcrop-fileinput-upload-label");
-        $upload_label.text(this.options.labels.upload);
-        $upload_button = $("<span></span>");
-        $upload_button.addClass("jcrop-fileinput-fakebutton");
-        $upload_button.addClass("jcrop-fileinput-button");
-        $(this.element).wrap($upload_button);
-        $(this.element).before($upload_label);
-        $crop_button = $("<button>" + this.options.labels.crop + "</button>");
-        $crop_button.addClass("jcrop-fileinput-button");
-        $crop_button.addClass("jcrop-fileinput-crop-button");
-        $crop_button.on("click", this.on_crop_click);
-        if (!this.options.show_crop_button) {
-          $crop_button.hide();
+        controlsRootWrap = document.createElement("div");
+        controlsRootWrap.className = "jcrop-fileinput-wrapper";
+        $(this.buttons).wrap(controlsRootWrap);
+        this.controlsRoot = $(this.buttons).parent();
+        $uploadLabel = $("<span></span>");
+        $uploadLabel.addClass("jcrop-fileinput-upload-label");
+        $uploadLabel.text(this.options.labels.upload);
+        $uploadButton = $("<span></span>");
+        $uploadButton.addClass("jcrop-fileinput-fakebutton");
+        $uploadButton.addClass("jcrop-fileinput-button");
+        $(this.element).wrap($uploadButton);
+        $(this.element).before($uploadLabel);
+        $cropButton = $("<button>" + this.options.labels.crop + "</button>");
+        $cropButton.addClass("jcrop-fileinput-button");
+        $cropButton.addClass("jcrop-fileinput-crop-button");
+        $cropButton.on("click", this.onCropClick);
+        if (!this.options.showCropButton) {
+          $cropButton.hide();
         }
-        $(this.buttons).prepend($crop_button);
-        $delete_button = $("<button>" + this.options.labels["delete"] + "</button>");
-        $delete_button.addClass("jcrop-fileinput-button");
-        $delete_button.addClass("jcrop-fileinput-delete-button");
-        $delete_button.on("click", this.on_delete_click);
-        if (!this.options.show_delete_button) {
-          $delete_button.hide();
+        $(this.buttons).prepend($cropButton);
+        $deleteButton = $("<button>" + this.options.labels["delete"] + "</button>");
+        $deleteButton.addClass("jcrop-fileinput-button");
+        $deleteButton.addClass("jcrop-fileinput-delete-button");
+        $deleteButton.on("click", this.onDeleteClick);
+        if (!this.options.showDeleteButton) {
+          $deleteButton.hide();
         }
-        $(this.buttons).append($delete_button);
+        $(this.buttons).append($deleteButton);
         $status = $("<div></div>");
         $status.addClass("jcrop-fileinput-status");
-        this.controls_root.prepend($status);
+        this.controlsRoot.prepend($status);
         if ($(this.element).attr("data-initial")) {
-          initial_image_src = $(this.element).attr("data-initial");
-          this.build_image(initial_image_src, this.on_initial_ready);
-          this.set_image_uploaded(true);
+          initialImageSrc = $(this.element).attr("data-initial");
+          this.buildImage(initialImageSrc, this.onInitialReady);
+          this.setImageUploaded(true);
         } else {
-          this.set_image_uploaded(false);
+          this.setImageUploaded(false);
         }
         this.widgetContainer = $("<div>");
         this.widgetContainer.addClass("jcrop-fileinput-container");
-        this.controls_root.after(this.widgetContainer);
+        this.controlsRoot.after(this.widgetContainer);
         return this.targetCanvas = document.createElement("canvas");
       };
 
-      JCropFileInput.prototype.on_initial_ready = function(image) {
+      JCropFileInput.prototype.onInitialReady = function(image) {
 
         /* Fires when image in initial value of the input field is read */
-        this.original_image = image;
-        this.original_width = image.width;
-        this.original_height = image.height;
+        this.originalImage = image;
+        this.originalWidth = image.width;
+        this.originalHeight = image.height;
         this.targetCanvas.width = image.width;
         this.targetCanvas.height = image.height;
-        this.set_status_text(image.src, image.width, image.height);
-        return this.add_thumbnail(image);
+        this.setStatusText(image.src, image.width, image.height);
+        return this.addThumbnail(image);
       };
 
-      JCropFileInput.prototype.add_thumbnail = function(image) {
+      JCropFileInput.prototype.addThumbnail = function(image) {
 
         /* Adds the HTML img tag "image" to the controls, binds click event */
-        var $image, $image_container, image_container, thumb_size, thumbnail;
-        this.controls_root.find(".jcrop-fileinput-thumbnail").remove();
-        thumb_size = this.get_max_size(image.width, image.height, this.options.thumb_max_width, this.options.thumb_max_height);
-        thumbnail = this.get_resized_image(image, thumb_size.width, thumb_size.height);
-        image_container = document.createElement("div");
-        image_container.className = "jcrop-fileinput-thumbnail";
+        var $image, $imageContainer, imageContainer, thumbSize, thumbnail;
+        this.controlsRoot.find(".jcrop-fileinput-thumbnail").remove();
+        thumbSize = this.getMaxSize(image.width, image.height, this.options.thumbMaxWidth, this.options.thumbMaxHeight);
+        thumbnail = this.getResizedImage(image, thumbSize.width, thumbSize.height);
+        imageContainer = document.createElement("div");
+        imageContainer.className = "jcrop-fileinput-thumbnail";
         $image = $("<img>");
         $image.prop("src", thumbnail);
-        $image.on("click", this.on_crop_click);
-        $image.wrap(image_container);
-        $image_container = $image.parent();
-        return this.controls_root.prepend($image_container);
+        $image.on("click", this.onCropClick);
+        $image.wrap(imageContainer);
+        $imageContainer = $image.parent();
+        return this.controlsRoot.prepend($imageContainer);
       };
 
-      JCropFileInput.prototype.on_crop_click = function(evt) {
+      JCropFileInput.prototype.onCropClick = function(evt) {
         evt.preventDefault();
-        return this.build_jcrop_widget(this.original_image);
+        return this.buildJcropWidget(this.originalImage);
       };
 
-      JCropFileInput.prototype.on_delete_click = function(evt) {
+      JCropFileInput.prototype.onDeleteClick = function(evt) {
         evt.preventDefault();
-        this.set_image_uploaded(false);
-        if (this.options.delete_callback) {
-          return this.options.delete_callback();
+        this.setImageUploaded(false);
+        if (this.options.deleteCallback) {
+          return this.options.deleteCallback();
         }
       };
 
-      JCropFileInput.prototype.on_fileinput_change = function(evt) {
+      JCropFileInput.prototype.onFileinputChange = function(evt) {
         var file, filename, reader;
         file = evt.target.files[0];
         if (!file) {
@@ -160,52 +160,52 @@
         reader = new FileReader();
         reader.onloadend = (function(_this) {
           return function() {
-            _this.controls_root.find(".jcrop-fileinput-delete-button").show();
-            _this.controls_root.find(".jcrop-fileinput-upload-label").text(_this.options.labels.change);
-            if (_this.is_canvas_supported()) {
-              _this.controls_root.find(".jcrop-fileinput-crop-button").show();
-              _this.original_filetype = file.type;
-              _this.original_image = _this.build_image(reader.result, _this.on_uploaded_image_load);
-              return _this.set_status_text(filename, _this.original_image.width, _this.original_image.height);
-            } else if (_this.options.save_callback) {
-              return _this.options.save_callback(reader.result);
+            _this.controlsRoot.find(".jcrop-fileinput-delete-button").show();
+            _this.controlsRoot.find(".jcrop-fileinput-upload-label").text(_this.options.labels.change);
+            if (_this.isCanvasSupported()) {
+              _this.controlsRoot.find(".jcrop-fileinput-crop-button").show();
+              _this.originalFiletype = file.type;
+              _this.originalImage = _this.buildImage(reader.result, _this.onUploadedImageLoad);
+              return _this.setStatusText(filename, _this.originalImage.width, _this.originalImage.height);
+            } else if (_this.options.saveCallback) {
+              return _this.options.saveCallback(reader.result);
             }
           };
         })(this);
         return reader.readAsDataURL(file);
       };
 
-      JCropFileInput.prototype.on_uploaded_image_load = function(image) {
-        this.original_width = image.width;
-        this.original_height = image.height;
-        return this.build_jcrop_widget(image);
+      JCropFileInput.prototype.onUploadedImageLoad = function(image) {
+        this.originalWidth = image.width;
+        this.originalHeight = image.height;
+        return this.buildJcropWidget(image);
       };
 
-      JCropFileInput.prototype.on_save = function(evt) {
+      JCropFileInput.prototype.onSave = function(evt) {
 
         /* Signal triggered when the save button is pressed */
-        var image_data;
+        var imageData;
         evt.preventDefault();
-        image_data = this.targetCanvas.toDataURL(this.original_filetype);
-        this.jcrop_api.destroy();
-        this.controls_root.slideDown();
+        imageData = this.targetCanvas.toDataURL(this.originalFiletype);
+        this.jcropApi.destroy();
+        this.controlsRoot.slideDown();
         this.widgetContainer.empty();
-        return this.build_image(image_data, this.on_image_ready);
+        return this.buildImage(imageData, this.onImageReady);
       };
 
-      JCropFileInput.prototype.on_image_ready = function(image) {
+      JCropFileInput.prototype.onImageReady = function(image) {
 
         /* Processes the cropped image */
-        var height, image_data, size, width;
-        this.add_thumbnail(image);
-        this.set_image_uploaded(true);
-        image_data = image.src;
-        if (this.options.scale_width && this.options.scale_height) {
-          width = this.options.scale_width;
-          height = this.options.scale_height;
+        var height, imageData, size, width;
+        this.addThumbnail(image);
+        this.setImageUploaded(true);
+        imageData = image.src;
+        if (this.options.scaleWidth && this.options.scaleHeight) {
+          width = this.options.scaleWidth;
+          height = this.options.scaleHeight;
           this.debug("Scale image to " + width + "x" + height);
-        } else if (this.options.max_width || this.options.max_height) {
-          size = this.get_max_size(image.width, image.height, this.options.max_width, this.options.max_height);
+        } else if (this.options.maxWidth || this.options.maxHeight) {
+          size = this.getMaxSize(image.width, image.height, this.options.maxWidth, this.options.maxHeight);
           width = size.width;
           height = size.height;
           this.debug("Resized image to " + width + "x" + height);
@@ -213,22 +213,22 @@
           width = image.width;
           height = image.height;
         }
-        image_data = this.get_resized_image(image, width, height);
-        if (width < this.options.min_width || height < this.options.min_height) {
-          this.controls_root.addClass("jcrop-fileinput-invalid");
-          if (this.options.invalid_callback) {
-            this.options.invalid_callback(width, height);
+        imageData = this.getResizedImage(image, width, height);
+        if (width < this.options.minWidth || height < this.options.minHeight) {
+          this.controlsRoot.addClass("jcrop-fileinput-invalid");
+          if (this.options.invalidCallback) {
+            this.options.invalidCallback(width, height);
           }
         } else {
-          this.controls_root.removeClass("jcrop-fileinput-invalid");
+          this.controlsRoot.removeClass("jcrop-fileinput-invalid");
         }
-        this.targetCanvas.toBlob(this.set_blob);
-        if (this.options.save_callback) {
-          return this.options.save_callback(image_data);
+        this.targetCanvas.toBlob(this.setBlob);
+        if (this.options.saveCallback) {
+          return this.options.saveCallback(imageData);
         }
       };
 
-      JCropFileInput.prototype.is_canvas_supported = function() {
+      JCropFileInput.prototype.isCanvasSupported = function() {
 
         /* Returns true if the current browser supports canvas. */
         var canv;
@@ -236,23 +236,23 @@
         return !!(canv.getContext && canv.getContext("2d"));
       };
 
-      JCropFileInput.prototype.set_image_uploaded = function(has_image) {
+      JCropFileInput.prototype.setImageUploaded = function(hasImage) {
 
         /* Makes change to the UI depending of the presence of an image */
-        if (has_image) {
-          this.controls_root.find(".jcrop-fileinput-upload-label").text(this.options.labels.change);
-          return this.controls_root.addClass("jcrop-fileinput-has-file");
+        if (hasImage) {
+          this.controlsRoot.find(".jcrop-fileinput-upload-label").text(this.options.labels.change);
+          return this.controlsRoot.addClass("jcrop-fileinput-has-file");
         } else {
-          this.controls_root.removeClass("jcrop-fileinput-has-file");
-          this.controls_root.find(".jcrop-fileinput-thumbnail").remove();
-          this.controls_root.find(".jcrop-fileinput-delete-button").hide();
-          this.controls_root.find(".jcrop-fileinput-crop-button").hide();
-          this.controls_root.find(".jcrop-fileinput-upload-label").text(this.options.labels.upload);
-          return this.set_status_text(null);
+          this.controlsRoot.removeClass("jcrop-fileinput-has-file");
+          this.controlsRoot.find(".jcrop-fileinput-thumbnail").remove();
+          this.controlsRoot.find(".jcrop-fileinput-delete-button").hide();
+          this.controlsRoot.find(".jcrop-fileinput-crop-button").hide();
+          this.controlsRoot.find(".jcrop-fileinput-upload-label").text(this.options.labels.upload);
+          return this.setStatusText(null);
         }
       };
 
-      JCropFileInput.prototype.build_image = function(image_data, callback) {
+      JCropFileInput.prototype.buildImage = function(imageData, callback) {
 
         /* Returns an image HTML element containing image data
             The image may (and will probably will not) be fully loaded when the
@@ -260,7 +260,7 @@
          */
         var image;
         image = document.createElement("img");
-        image.src = image_data;
+        image.src = imageData;
         image.onload = function() {
           if (callback) {
             return callback(image);
@@ -269,73 +269,73 @@
         return image;
       };
 
-      JCropFileInput.prototype.set_blob = function(blob) {
+      JCropFileInput.prototype.setBlob = function(blob) {
         return this.blob = blob;
       };
 
-      JCropFileInput.prototype.build_toolbar = function() {
+      JCropFileInput.prototype.buildToolbar = function() {
 
         /* Return a toolbar jQuery element containing actions applyable to
             the JCrop widget.
          */
-        var $save_button, $toolbar;
+        var $saveButton, $toolbar;
         $toolbar = $("<div>").addClass("jcrop-fileinput-toolbar");
-        $save_button = $("<button>" + this.options.labels.save + "</button>");
-        $save_button.addClass("jcrop-fileinput-button");
-        $save_button.on("click", this.on_save);
-        return $toolbar.append($save_button);
+        $saveButton = $("<button>" + this.options.labels.save + "</button>");
+        $saveButton.addClass("jcrop-fileinput-button");
+        $saveButton.on("click", this.onSave);
+        return $toolbar.append($saveButton);
       };
 
-      JCropFileInput.prototype.set_status_text = function(filenameText, width, height) {
-        var className, filename, filename_parts, size, size_text, status_bar;
-        status_bar = this.controls_root.find(".jcrop-fileinput-status");
-        status_bar.empty();
+      JCropFileInput.prototype.setStatusText = function(filenameText, width, height) {
+        var className, filename, filenameParts, size, sizeText, statusBar;
+        statusBar = this.controlsRoot.find(".jcrop-fileinput-status");
+        statusBar.empty();
         if (!filenameText) {
           return;
         }
-        filename_parts = filenameText.split("/");
-        filenameText = filename_parts[filename_parts.length - 1];
+        filenameParts = filenameText.split("/");
+        filenameText = filenameParts[filenameParts.length - 1];
         className = "jcrop-fileinput-filename";
         filename = $("<span>").addClass(className).text(filenameText);
         filename.prop("title", filenameText);
-        size_text = "(" + width + " x " + height + " px)";
-        size = $("<span>").addClass("jcrop-fileinput-size").text(size_text);
-        status_bar.append(filename);
-        return status_bar.append(size);
+        sizeText = "(" + width + " x " + height + " px)";
+        size = $("<span>").addClass("jcrop-fileinput-size").text(sizeText);
+        statusBar.append(filename);
+        return statusBar.append(size);
       };
 
-      JCropFileInput.prototype.get_resized_image = function(image, width, height) {
+      JCropFileInput.prototype.getResizedImage = function(image, width, height) {
 
         /* Resize an image to fixed size */
-        var canvas, canvas_height, canvas_width, ctx;
+        var canvas, canvasHeight, canvasWidth, ctx;
         if (!width || !height) {
           this.debug("Missing image dimensions");
           return;
         }
         this.debug("Resizing image to " + width + "x" + height);
-        canvas_width = width;
-        canvas_height = height;
+        canvasWidth = width;
+        canvasHeight = height;
         canvas = document.createElement("canvas");
-        canvas.width = canvas_width;
-        canvas.height = canvas_height;
+        canvas.width = canvasWidth;
+        canvas.height = canvasHeight;
         ctx = canvas.getContext("2d");
         ctx.drawImage(image, 0, 0, width, height);
-        return canvas.toDataURL(this.original_filetype);
+        return canvas.toDataURL(this.originalFiletype);
       };
 
-      JCropFileInput.prototype.get_max_size = function(width, height, max_width, max_height) {
+      JCropFileInput.prototype.getMaxSize = function(width, height, maxWidth, maxHeight) {
         var newHeight, newWidth;
         newWidth = width;
         newHeight = height;
         if (width > height) {
-          if (width > max_width) {
-            newHeight *= max_width / width;
-            newWidth = max_width;
+          if (width > maxWidth) {
+            newHeight *= maxWidth / width;
+            newWidth = maxWidth;
           }
         } else {
-          if (height > max_height) {
-            newWidth *= max_height / height;
-            newHeight = max_height;
+          if (height > maxHeight) {
+            newWidth *= maxHeight / height;
+            newHeight = maxHeight;
           }
         }
         return {
@@ -344,14 +344,14 @@
         };
       };
 
-      JCropFileInput.prototype.build_jcrop_widget = function(image) {
+      JCropFileInput.prototype.buildJcropWidget = function(image) {
 
         /* Adds a fully configured JCrop widget to the widgetContainer */
         var $img, data, instance, size;
         this.debug("initalizing jcrop ");
-        size = this.get_max_size(image.width, image.height, this.options.jcrop_width, this.options.jcrop_height);
-        data = this.get_resized_image(image, size.width, size.height);
-        this.controls_root.slideUp();
+        size = this.getMaxSize(image.width, image.height, this.options.jcropWidth, this.options.jcropHeight);
+        data = this.getResizedImage(image, size.width, size.height);
+        this.controlsRoot.slideUp();
         instance = this;
         this.widgetContainer.find(".jcrop-image").remove();
         this.widgetContainer.find(".jcrop-fileinput-toolbar").remove();
@@ -359,11 +359,11 @@
         $img.prop("src", data);
         $img.addClass("jcrop-image");
         this.widgetContainer.append($img);
-        this.widgetContainer.append(this.build_toolbar());
+        this.widgetContainer.append(this.buildToolbar());
         this.widgetContainer.slideDown();
         return $img.Jcrop({
-          onChange: this.on_jcrop_select,
-          onSelect: this.on_jcrop_select,
+          onChange: this.onJcropSelect,
+          onSelect: this.onJcropSelect,
           aspectRatio: this.options.ratio,
           bgColor: "white",
           bgOpacity: 0.5
@@ -371,42 +371,42 @@
           var api;
           api = this;
           api.setSelect([0, 0, $img.width(), $img.height()]);
-          return instance.jcrop_api = api;
+          return instance.jcropApi = api;
         });
       };
 
-      JCropFileInput.prototype.on_jcrop_select = function(coords) {
-        return this.crop_original_image(coords);
+      JCropFileInput.prototype.onJcropSelect = function(coords) {
+        return this.cropOriginalImage(coords);
       };
 
-      JCropFileInput.prototype.crop_original_image = function(coords) {
-        var canvas, canvas_height, canvas_width, ctx, factor, isHigher, isWider, origin_x, origin_y;
+      JCropFileInput.prototype.cropOriginalImage = function(coords) {
+        var canvas, canvasHeight, canvasWidth, ctx, factor, isHigher, isWider, originX, originY;
         if (!coords) {
           return;
         }
-        isWider = this.original_width > this.options.jcrop_width;
-        isHigher = this.original_height > this.options.jcrop_height;
+        isWider = this.originalWidth > this.options.jcropWidth;
+        isHigher = this.originalHeight > this.options.jcropHeight;
         if (isWider || isHigher) {
-          if (this.original_width > this.original_height) {
-            factor = this.original_width / this.options.jcrop_width;
+          if (this.originalWidth > this.originalHeight) {
+            factor = this.originalWidth / this.options.jcropWidth;
           } else {
-            factor = this.original_height / this.options.jcrop_height;
+            factor = this.originalHeight / this.options.jcropHeight;
           }
         } else {
           factor = 1;
         }
         canvas = this.targetCanvas;
-        origin_x = Math.max(coords.x * factor, 0);
-        origin_y = Math.max(coords.y * factor, 0);
-        canvas_width = parseInt(coords.w * factor);
-        canvas_height = parseInt(coords.h * factor);
-        canvas.width = canvas_width;
-        canvas.height = canvas_height;
+        originX = Math.max(coords.x * factor, 0);
+        originY = Math.max(coords.y * factor, 0);
+        canvasWidth = parseInt(coords.w * factor);
+        canvasHeight = parseInt(coords.h * factor);
+        canvas.width = canvasWidth;
+        canvas.height = canvasHeight;
         ctx = canvas.getContext("2d");
-        return ctx.drawImage(this.original_image, origin_x, origin_y, canvas_width, canvas_height, 0, 0, canvas_width, canvas_height);
+        return ctx.drawImage(this.originalImage, originX, originY, canvasWidth, canvasHeight, 0, 0, canvasWidth, canvasHeight);
       };
 
-      JCropFileInput.prototype.override_form_submit = function() {
+      JCropFileInput.prototype.overrideFormSubmit = function() {
         var form;
         form = $(this.element).closest("form").get(0);
         if (!form) {
@@ -414,31 +414,30 @@
         }
         return $(form).on("submit", (function(_this) {
           return function(evt) {
-            var action_url, field, field_name, form_data, i, j, jcrop_instance, ref, request, value;
+            var actionUrl, field, fieldName, formData, i, j, jcropInstance, ref, request, value;
             evt.preventDefault();
-            form_data = new FormData();
-            console.log(form);
+            formData = new FormData();
             for (i = j = 0, ref = form.length; 0 <= ref ? j <= ref : j >= ref; i = 0 <= ref ? ++j : --j) {
               field = form[i];
               if (!field) {
                 continue;
               }
-              field_name = field.name;
-              if (!field_name) {
+              fieldName = field.name;
+              if (!fieldName) {
                 continue;
               }
-              jcrop_instance = field.JCropFileInput;
-              if (!jcrop_instance) {
+              jcropInstance = field.JCropFileInput;
+              if (!jcropInstance) {
                 value = field.value;
-                form_data.append(field_name, value);
+                formData.append(fieldName, value);
               }
             }
-            form_data.append(_this.element.name, _this.blob, "image.png");
+            formData.append(_this.element.name, _this.blob, "image.png");
             request = new XMLHttpRequest();
-            action_url = form.action || ".";
-            request.open("POST", action_url);
-            request.send(form_data);
-            return request.onload = function(oEvent) {
+            actionUrl = form.action || ".";
+            request.open("POST", actionUrl);
+            request.send(formData);
+            return request.onload = function() {
               document.open();
               document.write(request.responseText);
               return document.close();
@@ -453,17 +452,17 @@
         }
       };
 
-      JCropFileInput.prototype.set_options = function(options) {
+      JCropFileInput.prototype.setOptions = function(options) {
         this.options = $.extend({}, this.options, options);
-        return this.set_ratio(this.options.ratio);
+        return this.setRatio(this.options.ratio);
       };
 
-      JCropFileInput.prototype.set_ratio = function(ratio_value) {
-        if (!this.jcrop_api) {
+      JCropFileInput.prototype.setRatio = function(ratioValue) {
+        if (!this.jcropApi) {
           return;
         }
-        return this.jcrop_api.setOptions({
-          aspectRatio: ratio_value
+        return this.jcropApi.setOptions({
+          aspectRatio: ratioValue
         });
       };
 
@@ -477,7 +476,7 @@
           return $.data(this, "plugin_" + pluginName, new JCropFileInput(this, options));
         } else {
           instance = $.data(this, "plugin_" + pluginName);
-          return instance.set_options(options);
+          return instance.setOptions(options);
         }
       });
     };

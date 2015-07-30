@@ -17,8 +17,8 @@ describe("JCrop File Inputs", function () {
         });
 
         it("has default options", function () {
-            expect(instance.options.jcrop_width).to.equal(640);
-            expect(instance.options.jcrop_height).to.equal(480);
+            expect(instance.options.jcropWidth).to.equal(640);
+            expect(instance.options.jcropHeight).to.equal(480);
         });
     });
 

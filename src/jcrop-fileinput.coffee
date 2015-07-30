@@ -3,21 +3,21 @@ do ($ = jQuery, window, document) ->
   pluginName = "JCropFileInput"
   defaults =
     ratio: undefined,
-    jcrop_width: 640,
-    jcrop_height: 480,
-    scale_height: undefined,
-    scale_width: undefined,
-    min_width: undefined,
-    min_height: undefined,
-    max_height: 9999,
-    max_width: 9999,
-    thumb_max_width: 50,
-    thumb_max_height: 50,
-    save_callback: undefined,
-    delete_callback: undefined,
-    invalid_callback: undefined,
-    show_crop_button: false,
-    show_delete_button: false,
+    jcropWidth: 640,
+    jcropHeight: 480,
+    scaleHeight: undefined,
+    scaleWidth: undefined,
+    minWidth: undefined,
+    minHeight: undefined,
+    maxHeight: 9999,
+    maxWidth: 9999,
+    thumbMaxWidth: 50,
+    thumbMaxHeight: 50,
+    saveCallback: undefined,
+    deleteCallback: undefined,
+    invalidCallback: undefined,
+    showCropButton: false,
+    showDeleteButton: false,
     debug: false,
     labels: {
       upload: "Upload an image",
@@ -30,8 +30,8 @@ do ($ = jQuery, window, document) ->
   class JCropFileInput
     constructor: (@element, options) ->
       @options = $.extend({}, defaults, options)
-      @_defaults = defaults
-      @_name = pluginName
+      @defaults = defaults
+      @name = pluginName
       @init()
 
     init: ->
@@ -44,135 +44,134 @@ do ($ = jQuery, window, document) ->
       @element.JCropFileInput = @
 
       # Connect file input to signal
-      $(@element).on("change", @on_fileinput_change)
+      $(@element).on("change", @onFileinputChange)
 
       # Override form submit if no callback has been provided
-      if not @options.save_callback
-        @override_form_submit()
+      if not @options.saveCallback
+        @overrideFormSubmit()
 
       # Wrap file input in buttons container
-      _buttons_wrap = document.createElement("div")
-      _buttons_wrap.className = "jcrop-fileinput-actions"
-      $(@element).wrap(_buttons_wrap)
+      buttonsWrap = document.createElement("div")
+      buttonsWrap.className = "jcrop-fileinput-actions"
+      $(@element).wrap(buttonsWrap)
       # Get a reference to the wrapping div as the wrap function makes a clone.
       @buttons = $(@element).parent()
 
       # Wrap file input in root element
-      _controls_root = document.createElement("div")
-      _controls_root.className = "jcrop-fileinput-wrapper"
-      $(@buttons).wrap(_controls_root)
-      @controls_root = $(@buttons).parent()
+      controlsRootWrap = document.createElement("div")
+      controlsRootWrap.className = "jcrop-fileinput-wrapper"
+      $(@buttons).wrap(controlsRootWrap)
+      @controlsRoot = $(@buttons).parent()
 
       # Wrap the file input inside a fake button, in order to style it nicely.
-      $upload_label = $("<span></span>")
-      $upload_label.addClass("jcrop-fileinput-upload-label")
-      $upload_label.text(@options.labels.upload)
-      $upload_button = $("<span></span>")
-      $upload_button.addClass("jcrop-fileinput-fakebutton")
-      $upload_button.addClass("jcrop-fileinput-button")
-      $(@element).wrap($upload_button)
-      $(@element).before($upload_label)
+      $uploadLabel = $("<span></span>")
+      $uploadLabel.addClass("jcrop-fileinput-upload-label")
+      $uploadLabel.text(@options.labels.upload)
+      $uploadButton = $("<span></span>")
+      $uploadButton.addClass("jcrop-fileinput-fakebutton")
+      $uploadButton.addClass("jcrop-fileinput-button")
+      $(@element).wrap($uploadButton)
+      $(@element).before($uploadLabel)
 
       # Initialize crop button
-      $crop_button = $("<button>#{@options.labels.crop}</button>")
-      $crop_button.addClass("jcrop-fileinput-button")
-      $crop_button.addClass("jcrop-fileinput-crop-button")
-      $crop_button.on("click", @on_crop_click)
-      if not @options.show_crop_button
-        $crop_button.hide()
-      $(@buttons).prepend($crop_button)
+      $cropButton = $("<button>#{@options.labels.crop}</button>")
+      $cropButton.addClass("jcrop-fileinput-button")
+      $cropButton.addClass("jcrop-fileinput-crop-button")
+      $cropButton.on("click", @onCropClick)
+      if not @options.showCropButton
+        $cropButton.hide()
+      $(@buttons).prepend($cropButton)
 
       # Initialize delete button
-      $delete_button = $("<button>#{@options.labels.delete}</button>")
-      $delete_button.addClass("jcrop-fileinput-button")
-      $delete_button.addClass("jcrop-fileinput-delete-button")
-      $delete_button.on("click", @on_delete_click)
-      if not @options.show_delete_button
-        $delete_button.hide()
-      $(@buttons).append($delete_button)
+      $deleteButton = $("<button>#{@options.labels.delete}</button>")
+      $deleteButton.addClass("jcrop-fileinput-button")
+      $deleteButton.addClass("jcrop-fileinput-delete-button")
+      $deleteButton.on("click", @onDeleteClick)
+      if not @options.showDeleteButton
+        $deleteButton.hide()
+      $(@buttons).append($deleteButton)
 
       # Initialize status bar
       $status = $("<div></div>")
       $status.addClass("jcrop-fileinput-status")
-      @controls_root.prepend($status)
+      @controlsRoot.prepend($status)
 
       # Handle initial value of widget
       if $(@element).attr("data-initial")
-        initial_image_src = $(@element).attr("data-initial")
-        @build_image(initial_image_src, @on_initial_ready)
-        @set_image_uploaded(true)
+        initialImageSrc = $(@element).attr("data-initial")
+        @buildImage(initialImageSrc, @onInitialReady)
+        @setImageUploaded(true)
       else
-        @set_image_uploaded(false)
+        @setImageUploaded(false)
 
       # Build the container for JCrop
       @widgetContainer = $("<div>")
       @widgetContainer.addClass("jcrop-fileinput-container")
-      @controls_root.after(@widgetContainer)
+      @controlsRoot.after(@widgetContainer)
 
       # Instanciate the canvas containing the resized image
       @targetCanvas = document.createElement("canvas")
 
-    on_initial_ready: (image) =>
+    onInitialReady: (image) =>
       ### Fires when image in initial value of the input field is read ###
-      @original_image = image
-      @original_width = image.width
-      @original_height = image.height
+      @originalImage = image
+      @originalWidth = image.width
+      @originalHeight = image.height
       @targetCanvas.width = image.width
       @targetCanvas.height = image.height
 
-      @set_status_text(image.src, image.width, image.height)
-      @add_thumbnail(image)
+      @setStatusText(image.src, image.width, image.height)
+      @addThumbnail(image)
 
-    add_thumbnail: (image) ->
+    addThumbnail: (image) ->
       ### Adds the HTML img tag "image" to the controls, binds click event ###
-      @controls_root.find(".jcrop-fileinput-thumbnail").remove()
-      thumb_size = @get_max_size(
+      @controlsRoot.find(".jcrop-fileinput-thumbnail").remove()
+      thumbSize = @getMaxSize(
         image.width, image.height,
-        @options.thumb_max_width, @options.thumb_max_height
+        @options.thumbMaxWidth, @options.thumbMaxHeight
       )
-      thumbnail = @get_resized_image(image, thumb_size.width, thumb_size.height)
-      image_container = document.createElement("div")
-      image_container.className = "jcrop-fileinput-thumbnail"
+      thumbnail = @getResizedImage(image, thumbSize.width, thumbSize.height)
+      imageContainer = document.createElement("div")
+      imageContainer.className = "jcrop-fileinput-thumbnail"
       $image = $("<img>")
       $image.prop("src", thumbnail)
-      $image.on("click", @on_crop_click)
-      $image.wrap(image_container)
-      $image_container = $image.parent()
-      @controls_root.prepend($image_container)
+      $image.on("click", @onCropClick)
+      $image.wrap(imageContainer)
+      $imageContainer = $image.parent()
+      @controlsRoot.prepend($imageContainer)
 
-    on_crop_click: (evt) =>
+    onCropClick: (evt) =>
       evt.preventDefault()
-      @build_jcrop_widget(@original_image)
+      @buildJcropWidget(@originalImage)
 
-    on_delete_click: (evt) =>
+    onDeleteClick: (evt) =>
       evt.preventDefault()
-      @set_image_uploaded(false)
+      @setImageUploaded(false)
 
       # Run callback
-      if @options.delete_callback
-        @options.delete_callback()
+      if @options.deleteCallback
+        @options.deleteCallback()
 
-    on_fileinput_change: (evt) =>
+    onFileinputChange: (evt) =>
       file = evt.target.files[0]
       if not file
         @debug("No file given")
       filename = file.name
       reader = new FileReader()
       reader.onloadend = () =>
-        @controls_root.find(".jcrop-fileinput-delete-button").show()
-        @controls_root.find(
+        @controlsRoot.find(".jcrop-fileinput-delete-button").show()
+        @controlsRoot.find(
           ".jcrop-fileinput-upload-label"
         ).text(@options.labels.change)
-        if @is_canvas_supported()
-          @controls_root.find(".jcrop-fileinput-crop-button").show()
-          @original_filetype = file.type
-          @original_image = @build_image(reader.result,
-                                          @on_uploaded_image_load)
-          @set_status_text(filename,
-                           @original_image.width, @original_image.height)
+        if @isCanvasSupported()
+          @controlsRoot.find(".jcrop-fileinput-crop-button").show()
+          @originalFiletype = file.type
+          @originalImage = @buildImage(reader.result, @onUploadedImageLoad)
+          @setStatusText(filename,
+                           @originalImage.width, @originalImage.height)
         # Fallback when canvas not available: call callback with original image
-        else if @options.save_callback
-          @options.save_callback(reader.result)
+        else if @options.saveCallback
+          @options.saveCallback(reader.result)
 
       reader.readAsDataURL(file)
 
@@ -186,153 +185,152 @@ do ($ = jQuery, window, document) ->
       # look for a better alternative.
       #$(@element).replaceWith($(@element).val("").clone(true))
 
-    on_uploaded_image_load: (image) =>
-      @original_width = image.width
-      @original_height = image.height
-      @build_jcrop_widget(image)
+    onUploadedImageLoad: (image) =>
+      @originalWidth = image.width
+      @originalHeight = image.height
+      @buildJcropWidget(image)
 
-    on_save: (evt) =>
+    onSave: (evt) =>
       ### Signal triggered when the save button is pressed ###
       evt.preventDefault()
-      image_data = @targetCanvas.toDataURL(@original_filetype)
-      @jcrop_api.destroy()
-      @controls_root.slideDown()
+      imageData = @targetCanvas.toDataURL(@originalFiletype)
+      @jcropApi.destroy()
+      @controlsRoot.slideDown()
       @widgetContainer.empty()
-      @build_image(image_data, @on_image_ready)
+      @buildImage(imageData, @onImageReady)
 
-    on_image_ready: (image) =>
+    onImageReady: (image) =>
       ### Processes the cropped image ###
-      @add_thumbnail(image)
-      @set_image_uploaded(true)
-      image_data = image.src
-      if @options.scale_width and @options.scale_height
+      @addThumbnail(image)
+      @setImageUploaded(true)
+      imageData = image.src
+      if @options.scaleWidth and @options.scaleHeight
         # Scale image to scale size
-        width = @options.scale_width
-        height = @options.scale_height
+        width = @options.scaleWidth
+        height = @options.scaleHeight
         @debug("Scale image to #{width}x#{height}")
-      else if @options.max_width or @options.max_height
+      else if @options.maxWidth or @options.maxHeight
         # Resizing image to fit max size
-        size = @get_max_size(image.width, image.height,
-                             @options.max_width, @options.max_height)
+        size = @getMaxSize(image.width, image.height, @options.maxWidth, @options.maxHeight)
         width = size.width
         height = size.height
         @debug("Resized image to #{width}x#{height}")
       else
         width = image.width
         height = image.height
-      image_data = @get_resized_image(image, width, height)
-      if width < @options.min_width or height < @options.min_height
-        @controls_root.addClass("jcrop-fileinput-invalid")
-        if @options.invalid_callback
-          @options.invalid_callback(width, height)
+      imageData = @getResizedImage(image, width, height)
+      if width < @options.minWidth or height < @options.minHeight
+        @controlsRoot.addClass("jcrop-fileinput-invalid")
+        if @options.invalidCallback
+          @options.invalidCallback(width, height)
       else
-        @controls_root.removeClass("jcrop-fileinput-invalid")
+        @controlsRoot.removeClass("jcrop-fileinput-invalid")
 
-      @targetCanvas.toBlob(@set_blob)
-      if @options.save_callback
-        @options.save_callback(image_data)
+      @targetCanvas.toBlob(@setBlob)
+      if @options.saveCallback
+        @options.saveCallback(imageData)
 
-    is_canvas_supported: () ->
+    isCanvasSupported: () ->
       ### Returns true if the current browser supports canvas. ###
       canv = document.createElement("canvas")
       return !!(canv.getContext && canv.getContext("2d"))
 
-    set_image_uploaded: (has_image) ->
+    setImageUploaded: (hasImage) ->
       ### Makes change to the UI depending of the presence of an image ###
-      if has_image
-        @controls_root.find(
+      if hasImage
+        @controlsRoot.find(
           ".jcrop-fileinput-upload-label"
         ).text(@options.labels.change)
-        @controls_root.addClass("jcrop-fileinput-has-file")
+        @controlsRoot.addClass("jcrop-fileinput-has-file")
       else
         # Delete preview
-        @controls_root.removeClass("jcrop-fileinput-has-file")
-        @controls_root.find(".jcrop-fileinput-thumbnail").remove()
-        @controls_root.find(".jcrop-fileinput-delete-button").hide()
-        @controls_root.find(".jcrop-fileinput-crop-button").hide()
+        @controlsRoot.removeClass("jcrop-fileinput-has-file")
+        @controlsRoot.find(".jcrop-fileinput-thumbnail").remove()
+        @controlsRoot.find(".jcrop-fileinput-delete-button").hide()
+        @controlsRoot.find(".jcrop-fileinput-crop-button").hide()
 
-        @controls_root.find(
+        @controlsRoot.find(
           ".jcrop-fileinput-upload-label"
         ).text(@options.labels.upload)
-        @set_status_text(null)
+        @setStatusText(null)
 
-    build_image: (image_data, callback) ->
+    buildImage: (imageData, callback) ->
       ### Returns an image HTML element containing image data
           The image may (and will probably will not) be fully loaded when the
           image returns.  Use the callback to get the fully instanciated image.
       ###
       image = document.createElement("img")
-      image.src = image_data
+      image.src = imageData
       image.onload = () ->
         if callback
           callback(image)
       return image
 
-    set_blob: (blob) =>
+    setBlob: (blob) =>
       @blob = blob
       #console.log("Set blob to ", blob)
 
-    build_toolbar: () ->
+    buildToolbar: () ->
       ### Return a toolbar jQuery element containing actions applyable to
           the JCrop widget.
       ###
       $toolbar = $("<div>").addClass("jcrop-fileinput-toolbar")
-      $save_button = $("<button>#{@options.labels.save}</button>")
-      $save_button.addClass("jcrop-fileinput-button")
-      $save_button.on("click", @on_save)
-      $toolbar.append($save_button)
+      $saveButton = $("<button>#{@options.labels.save}</button>")
+      $saveButton.addClass("jcrop-fileinput-button")
+      $saveButton.on("click", @onSave)
+      $toolbar.append($saveButton)
 
-    set_status_text: (filenameText, width, height) ->
-      status_bar = @controls_root.find(".jcrop-fileinput-status")
-      status_bar.empty()
+    setStatusText: (filenameText, width, height) ->
+      statusBar = @controlsRoot.find(".jcrop-fileinput-status")
+      statusBar.empty()
       if not filenameText
         return
-      filename_parts = filenameText.split("/")
-      filenameText = filename_parts[filename_parts.length - 1]
+      filenameParts = filenameText.split("/")
+      filenameText = filenameParts[filenameParts.length - 1]
       className = "jcrop-fileinput-filename"
       filename = $("<span>").addClass(className).text(filenameText)
       filename.prop("title", filenameText)
-      size_text = "(#{width} x #{height} px)"
-      size = $("<span>").addClass("jcrop-fileinput-size").text(size_text)
-      status_bar.append(filename)
-      status_bar.append(size)
+      sizeText = "(#{width} x #{height} px)"
+      size = $("<span>").addClass("jcrop-fileinput-size").text(sizeText)
+      statusBar.append(filename)
+      statusBar.append(size)
 
-    get_resized_image: (image, width, height) ->
+    getResizedImage: (image, width, height) ->
       ### Resize an image to fixed size ###
       if not width or not height
         @debug("Missing image dimensions")
         return
       @debug("Resizing image to #{width}x#{height}")
-      canvas_width = width
-      canvas_height = height
+      canvasWidth = width
+      canvasHeight = height
       canvas = document.createElement("canvas")
-      canvas.width = canvas_width
-      canvas.height = canvas_height
+      canvas.width = canvasWidth
+      canvas.height = canvasHeight
       ctx = canvas.getContext("2d")
       ctx.drawImage(image, 0, 0, width, height)
-      canvas.toDataURL(@original_filetype)
+      canvas.toDataURL(@originalFiletype)
 
-    get_max_size: (width, height, max_width, max_height) ->
+    getMaxSize: (width, height, maxWidth, maxHeight) ->
       newWidth = width
       newHeight = height
 
       if width > height
-        if width > max_width
-          newHeight *= max_width / width
-          newWidth = max_width
+        if width > maxWidth
+          newHeight *= maxWidth / width
+          newWidth = maxWidth
       else
-        if height > max_height
-          newWidth *= max_height / height
-          newHeight = max_height
+        if height > maxHeight
+          newWidth *= maxHeight / height
+          newHeight = maxHeight
       return {width: newWidth, height: newHeight}
 
-    build_jcrop_widget: (image) ->
+    buildJcropWidget: (image) ->
       ### Adds a fully configured JCrop widget to the widgetContainer ###
       @debug("initalizing jcrop ")
-      size = @get_max_size(image.width, image.height,
-                           @options.jcrop_width, @options.jcrop_height)
-      data = @get_resized_image(image, size.width, size.height)
-      @controls_root.slideUp()
+      size = @getMaxSize(image.width, image.height,
+                           @options.jcropWidth, @options.jcropHeight)
+      data = @getResizedImage(image, size.width, size.height)
+      @controlsRoot.slideUp()
       instance = this  # used to keep a reference to the JCrop API
 
       # Initial cleanup
@@ -344,78 +342,77 @@ do ($ = jQuery, window, document) ->
       $img.prop("src", data)
       $img.addClass("jcrop-image")
       @widgetContainer.append($img)
-      @widgetContainer.append(@build_toolbar())
+      @widgetContainer.append(@buildToolbar())
       @widgetContainer.slideDown()
       $img.Jcrop(
         {
-          onChange: @on_jcrop_select,
-          onSelect: @on_jcrop_select,
+          onChange: @onJcropSelect,
+          onSelect: @onJcropSelect,
           aspectRatio: @options.ratio,
           bgColor: "white",
           bgOpacity: 0.5,
         }, () ->
           api = this
           api.setSelect([0,0,$img.width(), $img.height()])
-          instance.jcrop_api = api
+          instance.jcropApi = api
       )
 
-    on_jcrop_select: (coords) =>
-      @crop_original_image(coords)
+    onJcropSelect: (coords) =>
+      @cropOriginalImage(coords)
 
-    crop_original_image: (coords) ->
+    cropOriginalImage: (coords) ->
       if not coords
         return
-      isWider = @original_width > @options.jcrop_width
-      isHigher = @original_height > @options.jcrop_height
+      isWider = @originalWidth > @options.jcropWidth
+      isHigher = @originalHeight > @options.jcropHeight
       if isWider or isHigher
-        if @original_width > @original_height
-          factor = @original_width / @options.jcrop_width
+        if @originalWidth > @originalHeight
+          factor = @originalWidth / @options.jcropWidth
         else
-          factor = @original_height / @options.jcrop_height
+          factor = @originalHeight / @options.jcropHeight
       else
         factor = 1
 
       canvas = @targetCanvas
-      origin_x = Math.max(coords.x * factor, 0)
-      origin_y = Math.max(coords.y * factor, 0)
-      canvas_width = parseInt(coords.w * factor)
-      canvas_height = parseInt(coords.h * factor)
-      canvas.width = canvas_width
-      canvas.height = canvas_height
+      originX = Math.max(coords.x * factor, 0)
+      originY = Math.max(coords.y * factor, 0)
+      canvasWidth = parseInt(coords.w * factor)
+      canvasHeight = parseInt(coords.h * factor)
+      canvas.width = canvasWidth
+      canvas.height = canvasHeight
       ctx = canvas.getContext("2d")
       ctx.drawImage(
-        @original_image,
-        origin_x, origin_y, canvas_width, canvas_height,
-        0, 0, canvas_width, canvas_height
+        @originalImage,
+        originX, originY, canvasWidth, canvasHeight,
+        0, 0, canvasWidth, canvasHeight
       )
 
-    override_form_submit: () ->
+    overrideFormSubmit: () ->
       form = $(@element).closest("form").get(0)
       if not form
         return
       $(form).on "submit", (evt) =>
         evt.preventDefault()
-        form_data = new FormData()
-        console.log(form)
+        formData = new FormData()
         for i in [0..form.length]
           field = form[i]
           if not field
             continue
-          field_name = field.name
-          if not field_name
+          fieldName = field.name
+          if not fieldName
             continue
 
           jcropInstance = field.JCropFileInput
           if not jcropInstance
             value = field.value
-            form_data.append(field_name, value)
+            formData.append(fieldName, value)
 
-        form_data.append(@element.name, @blob, "image.png")
+        formData.append(@element.name, @blob, "image.png")
         request = new XMLHttpRequest()
-        action_url = form.action or "."
-        request.open("POST", action_url)
-        request.send(form_data)
-        request.onload = (oEvent) ->
+        actionUrl = form.action or "."
+        request.open("POST", actionUrl)
+        request.send(formData)
+        request.onload = () ->
           # Not the ideal way, but currently the only way
           document.open()
           document.write(request.responseText)
@@ -425,14 +422,14 @@ do ($ = jQuery, window, document) ->
       if @options.debug
         console.log(message)
 
-    set_options: (options) ->
+    setOptions: (options) ->
       @options = $.extend({}, @options, options)
-      @set_ratio(@options.ratio)
+      @setRatio(@options.ratio)
 
-    set_ratio: (ratio_value) ->
-      if not @jcrop_api
+    setRatio: (ratioValue) ->
+      if not @jcropApi
         return
-      @jcrop_api.setOptions({aspectRatio: ratio_value})
+      @jcropApi.setOptions({aspectRatio: ratioValue})
 
   $.fn[pluginName] = (options) ->
     @each ->
@@ -440,4 +437,4 @@ do ($ = jQuery, window, document) ->
         $.data(@, "plugin_#{pluginName}", new JCropFileInput(@, options))
       else
         instance = $.data(@, "plugin_#{pluginName}")
-        instance.set_options(options)
+        instance.setOptions(options)
