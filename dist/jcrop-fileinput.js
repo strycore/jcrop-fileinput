@@ -420,15 +420,11 @@
             formData = new FormData(form);
             for (i = j = 0, ref = form.length; 0 <= ref ? j <= ref : j >= ref; i = 0 <= ref ? ++j : --j) {
               field = form[i];
-              console.log("FIELD:", field);
               if (!field || !field.name) {
                 continue;
               }
-              console.log("FIELD NAME:", field.name);
               if (field.name === _this.element.name) {
-                console.log('this is the field');
-                field.disabled = true;
-                formData.append(_this.element.name + "-cropped", _this.blob, "image.png");
+                formData.append(_this.element.name, _this.blob, "image.png");
               }
             }
             request = new XMLHttpRequest();
