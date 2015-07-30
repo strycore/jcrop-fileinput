@@ -400,8 +400,7 @@ do ($ = jQuery, window, document) ->
           if not field or not field.name
             continue
           if field.name == @element.name
-            field.disabled = true
-            formData.append(@element.name + "-cropped", @blob, "image.png")
+            formData.append(@element.name, @blob, "image.png")
         request = new XMLHttpRequest()
         actionUrl = form.action or "."
         request.open("POST", actionUrl)
