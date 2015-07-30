@@ -404,11 +404,14 @@
         canvas.width = canvasWidth;
         canvas.height = canvasHeight;
         ctx = canvas.getContext("2d");
-        return ctx.drawImage(this.originalImage, originX, originY, canvasWidth, canvasHeight, 0, 0, canvasWidth, canvasHeight);
+        ctx.drawImage(this.originalImage, originX, originY, canvasWidth, canvasHeight, 0, 0, canvasWidth, canvasHeight);
+        return console.log('humm...');
       };
 
       JCropFileInput.prototype.overrideFormSubmit = function() {
         var form;
+        console.log('!!!!');
+        return;
         form = $(this.element).closest("form").get(0);
         if (!form) {
           return;
