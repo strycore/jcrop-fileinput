@@ -17,6 +17,7 @@
       thumbMaxWidth: 50,
       thumbMaxHeight: 50,
       saveCallback: void 0,
+      onSubmit: function() {},
       deleteCallback: void 0,
       invalidCallback: void 0,
       showCropButton: false,
@@ -414,33 +415,28 @@
         }
         return $(form).on("submit", (function(_this) {
           return function(evt) {
-            var actionUrl, field, fieldName, formData, i, j, jcropInstance, ref, request, value;
+            var actionUrl, field, formData, i, j, ref, request;
             evt.preventDefault();
-            formData = new FormData();
+            formData = new FormData(form);
             for (i = j = 0, ref = form.length; 0 <= ref ? j <= ref : j >= ref; i = 0 <= ref ? ++j : --j) {
               field = form[i];
-              if (!field) {
+              console.log("FIELD:", field);
+              if (!field || !field.name) {
                 continue;
               }
-              fieldName = field.name;
-              if (!fieldName) {
-                continue;
-              }
-              jcropInstance = field.JCropFileInput;
-              if (!jcropInstance) {
-                value = field.value;
-                formData.append(fieldName, value);
+              console.log("FIELD NAME:", field.name);
+              if (field.name === _this.element.name) {
+                console.log('this is the field');
+                field.disabled = true;
+                formData.append(_this.element.name + "-cropped", _this.blob, "image.png");
               }
             }
-            formData.append(_this.element.name, _this.blob, "image.png");
             request = new XMLHttpRequest();
             actionUrl = form.action || ".";
             request.open("POST", actionUrl);
             request.send(formData);
-            return request.onload = function() {
-              document.open();
-              document.write(request.responseText);
-              return document.close();
+            return request.onload = function(event) {
+              return _this.options.onSubmit(event);
             };
           };
         })(this));

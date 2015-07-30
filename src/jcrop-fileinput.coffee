@@ -14,6 +14,7 @@ do ($ = jQuery, window, document) ->
     thumbMaxWidth: 50,
     thumbMaxHeight: 50,
     saveCallback: undefined,
+    onSubmit: ->,
     deleteCallback: undefined,
     invalidCallback: undefined,
     showCropButton: false,
@@ -211,7 +212,8 @@ do ($ = jQuery, window, document) ->
         @debug("Scale image to #{width}x#{height}")
       else if @options.maxWidth or @options.maxHeight
         # Resizing image to fit max size
-        size = @getMaxSize(image.width, image.height, @options.maxWidth, @options.maxHeight)
+        size = @getMaxSize(image.width, image.height,
+          @options.maxWidth, @options.maxHeight)
         width = size.width
         height = size.height
         @debug("Resized image to #{width}x#{height}")
@@ -268,7 +270,6 @@ do ($ = jQuery, window, document) ->
 
     setBlob: (blob) =>
       @blob = blob
-      #console.log("Set blob to ", blob)
 
     buildToolbar: () ->
       ### Return a toolbar jQuery element containing actions applyable to
@@ -393,30 +394,20 @@ do ($ = jQuery, window, document) ->
         return
       $(form).on "submit", (evt) =>
         evt.preventDefault()
-        formData = new FormData()
+        formData = new FormData(form)
         for i in [0..form.length]
           field = form[i]
-          if not field
+          if not field or not field.name
             continue
-          fieldName = field.name
-          if not fieldName
-            continue
-
-          jcropInstance = field.JCropFileInput
-          if not jcropInstance
-            value = field.value
-            formData.append(fieldName, value)
-
-        formData.append(@element.name, @blob, "image.png")
+          if field.name == @element.name
+            field.disabled = true
+            formData.append(@element.name + "-cropped", @blob, "image.png")
         request = new XMLHttpRequest()
         actionUrl = form.action or "."
         request.open("POST", actionUrl)
         request.send(formData)
-        request.onload = () ->
-          # Not the ideal way, but currently the only way
-          document.open()
-          document.write(request.responseText)
-          document.close()
+        request.onload = (event) =>
+          @options.onSubmit(event)
 
     debug: (message) ->
       if @options.debug
