@@ -17,9 +17,8 @@
     "src/jcrop-fileinput.scss"
   ],
   "dependencies": {
-    "jquery": "~1.11.3",
+    "jquery": "~2.2.0",
     "jcrop": "~0.9.12",
     "blueimp-canvas-to-blob": "~2.1.0"
-  },
-  "devDependencies": {}
+  }
 }
