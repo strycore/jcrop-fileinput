@@ -98,8 +98,7 @@
         this.controlsRoot.prepend($status);
         if ($(this.element).attr("data-initial")) {
           initialImageSrc = $(this.element).attr("data-initial");
-          this.buildImage(initialImageSrc, this.onInitialReady);
-          this.setImageUploaded(true);
+          this.setImage(initialImageSrc, this.onInitialReady);
         } else {
           this.setImageUploaded(false);
         }
@@ -458,17 +457,28 @@
         });
       };
 
+      JCropFileInput.prototype.setImage = function(url) {
+        this.buildImage(url, this.onInitialReady);
+        return this.setImageUploaded(true);
+      };
+
       return JCropFileInput;
 
     })();
     return $.fn[pluginName] = function(options) {
+      var args;
+      args = Array.prototype.slice.call(arguments, 1);
       return this.each(function() {
         var instance;
         if (!$.data(this, "plugin_" + pluginName)) {
           return $.data(this, "plugin_" + pluginName, new JCropFileInput(this, options));
         } else {
           instance = $.data(this, "plugin_" + pluginName);
-          return instance.setOptions(options);
+          if (typeof options === 'string') {
+            return instance[options].apply(instance, args);
+          } else {
+            return instance.setOptions(options);
+          }
         }
       });
     };

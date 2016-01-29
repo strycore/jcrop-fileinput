@@ -100,8 +100,7 @@ do ($ = jQuery, window, document) ->
       # Handle initial value of widget
       if $(@element).attr("data-initial")
         initialImageSrc = $(@element).attr("data-initial")
-        @buildImage(initialImageSrc, @onInitialReady)
-        @setImageUploaded(true)
+        @setImage(initialImageSrc, @onInitialReady)
       else
         @setImageUploaded(false)
 
@@ -421,10 +420,18 @@ do ($ = jQuery, window, document) ->
         return
       @jcropApi.setOptions({aspectRatio: ratioValue})
 
+    setImage: (url) ->
+      @buildImage(url, @onInitialReady)
+      @setImageUploaded(true)
+
   $.fn[pluginName] = (options) ->
+    args = Array.prototype.slice.call(arguments, 1)
     @each ->
       if !$.data(@, "plugin_#{pluginName}")
         $.data(@, "plugin_#{pluginName}", new JCropFileInput(@, options))
       else
         instance = $.data(@, "plugin_#{pluginName}")
-        instance.setOptions(options)
+        if typeof options == 'string'
+          instance[options].apply(instance, args)
+        else
+          instance.setOptions(options)

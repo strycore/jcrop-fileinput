@@ -1,11 +1,6 @@
 module.exports = function(grunt) {
-
   grunt.initConfig({
-
-    // Import package manifest
-    pkg: grunt.file.readJSON("jcrop-fileinput.json"),
-
-    // Banner definitions
+    pkg: grunt.file.readJSON("package.json"),
     meta: {
       banner: "/*\n" +
         " *  <%= pkg.title || pkg.name %> - v<%= pkg.version %>\n" +
@@ -17,12 +12,10 @@ module.exports = function(grunt) {
         " */\n"
     },
 
-    // Lint definitions
     coffeelint: {
       app: ["src/jcrop-fileinput.coffee"]
     },
 
-    // Minify definitions
     uglify: {
       myTarget: {
         src: ["dist/jcrop-fileinput.js"],
@@ -33,7 +26,6 @@ module.exports = function(grunt) {
       }
     },
 
-    // CoffeeScript compilation
     coffee: {
       compile: {
         files: {
@@ -50,7 +42,6 @@ module.exports = function(grunt) {
       }
     },
 
-    // Watch
     watch: {
       coffee: {
         files: "src/jcrop-fileinput.coffee",
@@ -62,7 +53,6 @@ module.exports = function(grunt) {
       }
     },
 
-    // Local server
     connect: {
       options: {
         port: 9000,
@@ -80,6 +70,7 @@ module.exports = function(grunt) {
         }
       }
     },
+
     browserSync: {
         dev: {
             bsFiles: {

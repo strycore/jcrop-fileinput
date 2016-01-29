@@ -87,7 +87,8 @@
 
       function switchToDoge(event) {
         event.preventDefault();
-        // TODO: Switch image in jcrop-fileinput widget
+        var url = 'doge.jpg';
+        $('#fileinput').JCropFileInput('setImage', url);
       }
 
       $(function() {
