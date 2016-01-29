@@ -243,6 +243,8 @@ do ($ = jQuery, window, document) ->
           ".jcrop-fileinput-upload-label"
         ).text(@options.labels.change)
         @controlsRoot.addClass("jcrop-fileinput-has-file")
+        @controlsRoot.find(".jcrop-fileinput-delete-button").show()
+        @controlsRoot.find(".jcrop-fileinput-crop-button").show()
       else
         # Delete preview
         @controlsRoot.removeClass("jcrop-fileinput-has-file")
