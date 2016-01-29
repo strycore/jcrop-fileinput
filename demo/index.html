@@ -58,7 +58,6 @@
         });
       });
     </script>
-
   </head>
   <body>
     <form action="post" method="get" accept-charset="utf-8">
@@ -68,8 +67,9 @@
       </div>
     </form>
     <div id="images"></div>
+    <a href='#' id='doge-button'>Doge !</a>
     <script>
-      var show_saved_image = function (image_data) {
+      function showSavedImage(image_data) {
         image_container = $('<div>').addClass('image-container')
         image = document.createElement('img')
         image.src = image_data
@@ -77,25 +77,32 @@
         $('#images').append(image_container)
       }
 
-      var delete_image = function () {
+      function deleteImage() {
          $('#images').last().remove();
       }
 
-      var on_invalid_image = function (width, height) {
+      function onInvalidImage(width, height) {
         alert("The image is too small (" + width + "x" + height + ")!");
       }
 
+      function switchToDoge(event) {
+        event.preventDefault();
+        // TODO: Switch image in jcrop-fileinput widget
+      }
+
       $(function() {
-        $("#fileinput").JCropFileInput({
+        $('#doge-button').on('click', switchToDoge);
+
+        $('#fileinput').JCropFileInput({
           preview_height: 150,
           preview_width: 150,
           maxHeight: 100,
           maxWidth: 100,
           minHeight: 100,
           minWidth: 100,
-          saveCallback: show_saved_image,
-          deleteCallback: delete_image,
-          invalidCallback: on_invalid_image,
+          saveCallback: showSavedImage,
+          deleteCallback: deleteImage,
+          invalidCallback: onInvalidImage,
           showCropButton: true,
           showDeleteButton: true,
           ratio: 1,
